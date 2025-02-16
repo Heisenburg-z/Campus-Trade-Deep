@@ -48,7 +48,7 @@ const HeroSection = () => (
     </div>
   </div>
 );
-// Auth Modal Component
+// Auth Modal Component <0730153735>
 const AuthModal = ({ type, onClose, switchType }) => {
   const isLogin = type === 'login';
   const [formData, setFormData] = useState({
