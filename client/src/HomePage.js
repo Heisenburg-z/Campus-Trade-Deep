@@ -440,7 +440,7 @@ const Footer = () => (
   </footer>
 );
 
-const HomePage = () => {
+const HomePage = ({listings}) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authType, setAuthType] = useState('login');
 

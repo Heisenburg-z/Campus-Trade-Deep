@@ -2,7 +2,7 @@
 import React from 'react';
 import UserDashboard from './userDashboard';
 
-const UserDashboardTest = () => {
+const UserDashboardTest = ({listings}) => {
   // Mock user data for testing
   const mockUser = {
     username: "Thapelo",

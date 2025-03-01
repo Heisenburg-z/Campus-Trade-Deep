@@ -1,1 +1,7 @@
 node_modules
+# Server
+server/.env
+server/node_modules/
+# Client
+.env.local
+.env.development
