@@ -1,10 +1,8 @@
 // server/src/routes/listings.js
-
 import express from 'express';
 import { Pool } from 'pg';
 
 const router = express.Router();
-
 const pool = new Pool({
   connectionString: process.env.DB_URL,
   ssl: { rejectUnauthorized: false }

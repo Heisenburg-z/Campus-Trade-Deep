@@ -1,15 +1,10 @@
-import listingsRouter from './routes/listings.js';
 import express from 'express';
 import cors from 'cors';
 import { Pool } from 'pg';
+import listingsRouter from './routes/listings.js';
+import dotenv from 'dotenv';
 
-
-// Rest of your code remains the same
-
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const { Pool } = require('pg');
+dotenv.config();
 
 const pool = new Pool({
   connectionString: process.env.DB_URL,
@@ -18,26 +13,17 @@ const pool = new Pool({
 
 const app = express();
 app.use(cors({ origin: process.env.CORS_ORIGIN }));
+app.use(express.json());
 
-//after initializing Express app im so lost
-app.use('/api/listings', listingsRouter);
-
-// Example route
-//  before other routes
+// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.get('/api/listings', async (req, res) => {
-  try {
-    const { rows } = await pool.query('SELECT * FROM listings');
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Database error' });
-  }
-});
+// Listings routes
+app.use('/api/listings', listingsRouter);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
