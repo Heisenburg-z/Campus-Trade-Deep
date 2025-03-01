@@ -1,4 +1,10 @@
 import listingsRouter from './routes/listings.js';
+import express from 'express';
+import cors from 'cors';
+import { Pool } from 'pg';
+
+
+// Rest of your code remains the same
 
 require('dotenv').config();
 const express = require('express');

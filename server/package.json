@@ -1,6 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
@@ -16,5 +17,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "pg": "^8.13.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
