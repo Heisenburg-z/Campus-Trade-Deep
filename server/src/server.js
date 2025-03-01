@@ -13,7 +13,7 @@ const pool = new Pool({
 const app = express();
 app.use(cors({ origin: process.env.CORS_ORIGIN }));
 
-//after initializing Express app
+//after initializing Express app im so lost
 app.use('/api/listings', listingsRouter);
 
 // Example route
