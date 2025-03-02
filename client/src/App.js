@@ -5,30 +5,36 @@ import UserDashboardTest from './userDashboardTest';
 
 function App() {
   // State management for listings
-  const [listings, setListings] = useState([]);
 
   // Fetch data when component mounts
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/listings');
-        const data = await response.json();
+    fetch(`${process.env.REACT_APP_API_URL}/api/listings`)
+      .then(res => res.json())
+      .then(data => {
         setListings(data);
-      } catch (error) {
-        console.error('Error fetching listings:', error);
-      }
-    };
-
-    fetchListings();
-  }, []); // Empty dependency array = runs once on mount
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="App">
-      {/* Pass listings data to components that need it */}
-      <HomePage listings={listings} />
-      <UserDashboardTest listings={listings} />
+      {loading ? (
+        <div className="loading-spinner">🌀</div>
+      ) : (
+        // Wrap multiple components in a fragment
+        <>
+          <HomePage listings={listings} />
+          <UserDashboardTest listings={listings} />
+        </>
+      )}
     </div>
   );
 }
 
 export default App;
+// App.js
+
+
