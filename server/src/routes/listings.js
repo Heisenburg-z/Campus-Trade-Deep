@@ -1,6 +1,7 @@
 // server/src/routes/listings.js
 import express from 'express';
-import { Pool } from 'pg';
+import pg from 'pg';
+const { Pool } = pg;
 
 const router = express.Router();
 const pool = new Pool({

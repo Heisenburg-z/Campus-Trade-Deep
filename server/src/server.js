@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import { Pool } from 'pg';
+import pg from 'pg';
 import listingsRouter from './routes/listings.js';
 import dotenv from 'dotenv';
-
+const { Pool } = pg;
 dotenv.config();
 
 const pool = new Pool({
