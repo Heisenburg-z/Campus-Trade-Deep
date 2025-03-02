@@ -232,6 +232,73 @@ INSERT INTO categories (name) VALUES
     ('Furniture'),
     ('Clothing'),
     ('School Supplies');
+/* ========== SAMPLE DATA ========== */
+-- Users
+/* ========== SCHEMA UPDATE ========== */
+-- Add image_url column to products
+ALTER TABLE products ADD COLUMN image_url TEXT;
+
+/* ========== ENHANCED SAMPLE DATA ========== */
+-- Users (12 total)
+INSERT INTO users (user_id, username, email, password_hash, university, verified) VALUES
+(uuid_generate_v4(), 'TechGuy', 'tech@campus.edu', crypt('MacBook2023!', gen_salt('bf')), 'Tech Institute', true),
+(uuid_generate_v4(), 'HomeDecor', 'decor@uni.edu', crypt('Chair123!', gen_salt('bf')), 'State University', true),
+(uuid_generate_v4(), 'Fashionista', 'fashion@college.edu', crypt('Jacket2023!', gen_salt('bf')), 'Fashion School', true),
+(uuid_generate_v4(), 'AudioPro', 'audio@campus.edu', crypt('Headphones1!', gen_salt('bf')), 'Music College', true),
+(uuid_generate_v4(), 'ScienceStudent', 'science@uni.edu', crypt('Chemistry123', gen_salt('bf')), 'Science University', true),
+(uuid_generate_v4(), 'LightItUp', 'lighting@college.edu', crypt('Lamp456!', gen_salt('bf')), 'Design Institute', true),
+(uuid_generate_v4(), 'TeeShop', 'tshirts@campus.edu', crypt('Tees2023!', gen_salt('bf')), 'State University', true),
+(uuid_generate_v4(), 'ScreenMaster', 'screens@tech.edu', crypt('Monitor789!', gen_salt('bf')), 'Tech Institute', true),
+(uuid_generate_v4(), 'LangLearner', 'language@uni.edu', crypt('French123!', gen_salt('bf')), 'Language College', true),
+(uuid_generate_v4(), 'WoodWorks', 'wood@campus.edu', crypt('Furniture456!', gen_salt('bf')), 'Design University', true),
+(uuid_generate_v4(), 'SneakerHead', 'shoes@college.edu', crypt('Sneakers789!', gen_salt('bf')), 'Sports Academy', true),
+(uuid_generate_v4(), 'GamerPro', 'gaming@tech.edu', crypt('Keyboard123!', gen_salt('bf')), 'Tech Institute', true);
+
+-- Products (15 items with images)
+INSERT INTO products (product_id, title, description, category_id, image_url) VALUES
+(uuid_generate_v4(), 'Like New Calculus Textbook', 'Used for one semester, excellent condition with no markings', 1, 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d'),
+(uuid_generate_v4(), 'MacBook Pro 2020', '13-inch, 256GB SSD, 16GB RAM. Perfect condition', 2, 'https://images.unsplash.com/photo-1511385348-a52b4a160dc2'),
+(uuid_generate_v4(), 'Ergonomic Office Chair', 'Adjustable height and lumbar support. Like new', 3, 'https://images.unsplash.com/photo-1505798577917-a65157d3320a'),
+(uuid_generate_v4(), 'Men''s Winter Jacket', 'Size L, waterproof, only worn twice', 4, 'https://images.unsplash.com/photo-1551028719-00167b16eac5'),
+(uuid_generate_v4(), 'Wireless Headphones', 'Noise-cancelling, 20hr battery life', 2, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e'),
+(uuid_generate_v4(), 'Organic Chemistry Textbook', 'Latest edition, highlighted chapters 1-5', 1, 'https://images.unsplash.com/photo-1589998059171-988d887df646'),
+(uuid_generate_v4(), 'LED Desk Lamp', 'Adjustable brightness, USB charging port', 3, 'https://images.unsplash.com/photo-1586201375761-83865001e31c'),
+(uuid_generate_v4(), 'Graphic T-Shirt Bundle', '3 vintage band tees, size M', 4, 'https://images.unsplash.com/photo-1581655353564-df123a1eb820'),
+(uuid_generate_v4(), 'External Monitor 24"', 'Full HD, HDMI/VGA inputs', 2, 'https://images.unsplash.com/photo-1586210579191-33b45e38fa2c'),
+(uuid_generate_v4(), 'French Dictionary', 'Like new, never used', 1, 'https://images.unsplash.com/photo-1541963463532-d68292c34b19'),
+(uuid_generate_v4(), 'Coffee Table', 'Modern design, minor surface scratches', 3, 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc'),
+(uuid_generate_v4(), 'Women''s Running Shoes', 'Size 8, barely worn', 4, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff'),
+(uuid_generate_v4(), 'Gaming Keyboard', 'RGB lighting, mechanical switches', 2, 'https://images.unsplash.com/photo-1587080266227-677cc2a4e76e'),
+(uuid_generate_v4(), 'World History Textbook', '2019 edition, some notes in margins', 1, 'https://images.unsplash.com/photo-1519682337058-a94d519337bc'),
+(uuid_generate_v4(), 'Bookshelf', '5-tier wooden shelf, easy assembly', 3, 'https://images.unsplash.com/photo-1598300056393-4aac492f4344');
+
+-- Listings (15 active listings)
+INSERT INTO listings (listing_id, user_id, product_id, price, condition, listing_type, status, location) 
+SELECT 
+  uuid_generate_v4(),
+  u.user_id,
+  p.product_id,
+  CASE 
+    WHEN p.title LIKE '%Textbook%' THEN 30 + (random() * 20)
+    WHEN p.category_id = 2 THEN 100 + (random() * 1000)
+    ELSE 20 + (random() * 80)
+  END,
+  CASE 
+    WHEN p.title LIKE '%Like New%' THEN 'like_new'
+    WHEN p.title LIKE '%Used%' THEN 'good'
+    ELSE 'excellent'
+  END,
+  'sale',
+  'active',
+  ST_SetSRID(ST_MakePoint(-118.4452 + (random() * 0.01), 34.0631 + (random() * 0.01)), 4326)::geography
+FROM products p
+JOIN users u ON 
+  CASE 
+    WHEN p.title LIKE '%Textbook%' THEN u.username = 'ScienceStudent'
+    WHEN p.title LIKE '%MacBook%' THEN u.username = 'TechGuy'
+    WHEN p.title LIKE '%Chair%' THEN u.username = 'HomeDecor'
+    ELSE u.username = split_part(p.title, ' ', 1) || '_' || split_part(p.title, ' ', 2)
+  END;
 
 /* ========== OPTIONAL CONSTRAINTS ========== */
 -- Uncomment if you want unique product listings:
