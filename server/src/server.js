@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pool from './db.js'; // Ensure this imports your corrected pool configuration
 import listingsRouter from './routes/listings.js';
+import 'dotenv/config'; // Add this line
 
 const app = express();
 
