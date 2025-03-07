@@ -14,12 +14,12 @@ app.use(cors({
 app.use(express.json());
 
 // Database Connection Verification
-pool.query('SELECT NOW()')
-  .then(() => console.log('Connected to Neon PostgreSQL'))
-  .catch(err => {
-    console.error('Database connection failed:', err);
-    process.exit(1);
-  });
+// pool.query('SELECT NOW()')
+//   .then(() => console.log('Connected to Neon PostgreSQL'))
+//   .catch(err => {
+//     console.error('Database connection failed:', err);
+//     process.exit(1);
+//   });
 
 // Routes
 app.use('/api/listings', listingsRouter);
