@@ -8,7 +8,7 @@ const app = express();
 
 // Middleware Configuration
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',  
   credentials: true
 }));
 app.use(express.json());
@@ -47,7 +47,7 @@ app.use((err, req, res, next) => {
 });
 
 // Server Startup
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });

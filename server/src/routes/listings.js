@@ -1,19 +1,8 @@
 // server/src/routes/listings.js
 import express from 'express';
-import pg from 'pg';
-const { Pool } = pg;
+import pool from '../db.js'; // Import the shared pool instance
 
 const router = express.Router();
-
-// Configure database connection
-const poolConfig = {
-  connectionString: process.env.DB_URL,
-  ssl: process.env.NODE_ENV === 'production' 
-    ? { rejectUnauthorized: false }
-    : false
-};
-
-const pool = new Pool(poolConfig);
 
 // Get paginated active listings
 router.get('/', async (req, res) => {
@@ -77,6 +66,11 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
+    // Validate UUID format
+    if (!/^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(id)) {
+      return res.status(400).json({ error: 'Invalid listing ID format' });
+    }
+
     const query = {
       text: `
         SELECT 
@@ -119,7 +113,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// CORS Preflight Handling
+// CORS Preflight Handling (Should be handled by main CORS middleware)
+// Remove this if you're already using the cors package in server.js
 router.options('/', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', process.env.CORS_ORIGIN);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
