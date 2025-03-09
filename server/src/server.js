@@ -15,28 +15,16 @@ app.use(cors({
 
 app.use(express.json());
 
-// Database connection verification with timeout
-const dbConnectionTimeout = setTimeout(() => {
-  console.error('Database connection timeout');
-  process.exit(1);
-}, 5000);
-
-pool.query('SELECT 1')
-  .then(() => {
-    clearTimeout(dbConnectionTimeout);
-    console.log('✅ Database connected');
-  })
-  .catch(err => {
-    clearTimeout(dbConnectionTimeout);
-    console.error('❌ Database connection failed:', err);
-    process.exit(1);
-  });
-
 // Routes
 app.use('/api/listings', listingsRouter);
 
-// Simplified health check
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
+// Enhanced health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -44,17 +32,22 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Server setup with graceful shutdown
-const server = app.listen(process.env.PORT || 8080, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${process.env.PORT || 8080}`);
+// Server configuration
+const PORT = process.env.PORT || 8080;
+const server = app.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
 
-// Handle SIGTERM from Railway
+// Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received - shutting down');
+  console.log('SIGTERM received - closing server');
   server.close(() => {
-    pool.end();
     console.log('Server closed');
+    pool.end();
     process.exit(0);
   });
 });
+
+// Add keep-alive headers
+server.keepAliveTimeout = 60000;
+server.headersTimeout = 65000;
