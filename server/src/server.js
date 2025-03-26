@@ -44,7 +44,7 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/statistics', statisticsRouter);
 
 // Enhanced health check with DB connection verification
-app.get('/health', async (req, res) => {
+app.get('api/health', async (req, res) => {
   try {
     await pool.query('SELECT 1');
     res.status(200).json({
