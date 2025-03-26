@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUser, FaPlus, FaShoppingCart, FaExchangeAlt, FaChartLine, FaRegBell, FaImage } from 'react-icons/fa';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, ResponsiveContainer } from 'recharts';
 import ProductCard from './ProductCard';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const UserDashboard = ({ user, onLogout }) => {
+
+const UserDashboard = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [listings, setListings] = useState([]);
   const [newListing, setNewListing] = useState({
@@ -14,12 +19,34 @@ const UserDashboard = ({ user, onLogout }) => {
     image: ''
   });
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('campusTradeToken');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const userData = await response.json();
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        navigate('/login');
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
   // Sample data
   const userStats = {
-    itemsBought: 12,
-    itemsSold: 8,
-    activeListings: 5,
-    tradeRequests: 3
+    itemsBought: 109,
+    itemsSold: 81,
+    activeListings: 15,
+    tradeRequests: 10
   };
 
   const salesData = [
@@ -60,6 +87,14 @@ const UserDashboard = ({ user, onLogout }) => {
       reader.readAsDataURL(file);
     }
   };
+  const handleLogout = () => {
+    localStorage.removeItem('campusTradeToken');
+    navigate('/');
+  };
+
+  if (!user) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50">
@@ -118,7 +153,7 @@ const UserDashboard = ({ user, onLogout }) => {
                   <div className="absolute right-0 hidden group-hover:block bg-white shadow-xl rounded-lg p-4 min-w-[200px] animate-fade-in">
                     <div className="p-2 text-gray-600">Signed in as {user.email}</div>
                     <button 
-                      onClick={onLogout}
+                      onClick={handleLogout}
                       className="w-full text-left p-3 hover:bg-gray-100 rounded-lg transition-colors"
                     >
                       Logout

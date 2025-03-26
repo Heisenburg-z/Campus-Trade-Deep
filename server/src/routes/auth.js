@@ -7,17 +7,20 @@ import { OAuth2Client } from 'google-auth-library';
 const router = express.Router();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// Google authentication
+// Google authentication endpoint
 router.post('/google', async (req, res) => {
   try {
-    const { token: googleToken, email, name } = req.body; // Renamed here
+    const { token } = req.body;
     
     // Verify Google token
     const ticket = await client.verifyIdToken({
-      idToken: googleToken, // Updated reference
+      idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID
     });
+    
     const payload = ticket.getPayload();
+    const email = payload.email;
+    const name = payload.name;
 
     // Check if user exists
     const userQuery = await pool.query(
@@ -39,7 +42,7 @@ router.post('/google', async (req, res) => {
       user = newUser.rows[0];
     }
 
-    // Generate JWT - renamed variable
+    // Generate JWT
     const jwtToken = jwt.sign(
       { userId: user.user_id, email: user.email },
       process.env.JWT_SECRET,
@@ -53,7 +56,7 @@ router.post('/google', async (req, res) => {
         email: user.email,
         university: user.university
       },
-      token: jwtToken // Updated property name
+      token: jwtToken
     });
 
   } catch (error) {

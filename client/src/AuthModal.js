@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { FaTimes, FaGoogle } from 'react-icons/fa';
 import { GoogleLogin } from '@react-oauth/google';
@@ -6,6 +7,7 @@ import axios from 'axios';
 
 
 const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
+  const navigate = useNavigate(); // Add this line
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -33,22 +35,22 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      const decoded = jwtDecode(credentialResponse.credential);
-      const { data } = await axios.post('/api/auth/google', {
-        token: credentialResponse.credential,
-        email: decoded.email,
-        name: decoded.name
-      });
-      
-      localStorage.setItem('campusTradeToken', data.token);
-      onSuccess(data.user);
-      onClose();
-    } catch (err) {
-      setError('Google authentication failed');
-    }
-  };
+// AuthModal.js
+const handleGoogleSuccess = async (credentialResponse) => {
+  try {
+    const response = await axios.post( // Changed variable name
+      `${process.env.REACT_APP_API_URL}/api/auth/google`,
+      { token: credentialResponse.credential }
+    );
+    
+    localStorage.setItem('campusTradeToken', response.data.token); // Changed to response.data
+    onSuccess(response.data.user); // Changed to response.data
+    navigate('/dashboard');
+    onClose();
+  } catch (err) {
+    setError('Google authentication failed');
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
