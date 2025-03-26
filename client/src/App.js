@@ -1,40 +1,39 @@
-import { Import } from 'lucide-react';
-import React, { useState, useEffect } from 'react'; // Add useEffect import
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import React, { useState, useEffect } from 'react';
 import HomePage from './HomePage';
 import UserDashboardTest from './userDashboardTest';
 
 function App() {
-  // State management for listings
-
-  // Fetch data when component mounts
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    fetch(`https://campus-trade-deep-production.up.railway.app/api/listings/`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/listings/`)
       .then(res => res.json())
       .then(data => {
         setListings(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching listings:', error);
         setLoading(false);
       });
   }, []);
 
   return (
-    <div className="App">
-      {loading ? (
-        <div className="loading-spinner">🌀</div>
-      ) : (
-        // Wrap multiple components in a fragment
-        <>
-          <HomePage listings={listings} />
-          <UserDashboardTest listings={listings} />
-        </>
-      )}
-    </div>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <div className="App">
+        {loading ? (
+          <div className="loading-spinner">🌀</div>
+        ) : (
+          <>
+            <HomePage listings={listings} />
+            <UserDashboardTest listings={listings} />
+          </>
+        )}
+      </div>
+    </GoogleOAuthProvider>
   );
 }
 
 export default App;
-// App.js
-
-
