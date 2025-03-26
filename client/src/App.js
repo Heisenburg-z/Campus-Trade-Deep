@@ -11,7 +11,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/listings`)
+    fetch(`https://campus-trade-deep-production.up.railway.app/api/listings/`)
       .then(res => res.json())
       .then(data => {
         setListings(data);
