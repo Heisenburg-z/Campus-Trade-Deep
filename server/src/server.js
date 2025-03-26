@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pool from './db.js';
 import 'dotenv/config';
+import authRouter from './routes/auth.js';
 
 // Import all route handlers
 import listingsRouter from './routes/listings.js';
@@ -11,6 +12,7 @@ import searchRouter from './routes/search.js';
 import reviewsRouter from './routes/reviews.js';
 import categoriesRouter from './routes/categories.js';
 import statisticsRouter from './routes/statistics.js';
+app.use('/api/auth', authRouter);
 
 const app = express();
 
