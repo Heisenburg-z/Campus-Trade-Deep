@@ -29,6 +29,6 @@ const UserDashboard = () => { // Remove props
     };
 
     fetchUserData();
-  }, [navigate]);
+  }, [navigate]);}
 
   // ... rest of your component
