@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import pool from './db.js';
 import 'dotenv/config';
-import authRouter from './routes/auth.js';
 
-// Import all route handlers
+// Import route handlers
+import authRouter from './routes/auth.js';
 import listingsRouter from './routes/listings.js';
 import usersRouter from './routes/users.js';
 import messagesRouter from './routes/messages.js';
@@ -12,8 +12,8 @@ import searchRouter from './routes/search.js';
 import reviewsRouter from './routes/reviews.js';
 import categoriesRouter from './routes/categories.js';
 import statisticsRouter from './routes/statistics.js';
-app.use('/api/auth', authRouter);
 
+// Initialize Express app first
 const app = express();
 
 // Enhanced security middleware
@@ -29,14 +29,15 @@ app.use(cors({
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// Rate limiting headers (actual rate limiting should be implemented via middleware)
+// Rate limiting headers
 app.use((req, res, next) => {
   res.setHeader('X-RateLimit-Limit', '100');
   res.setHeader('X-RateLimit-Remaining', '99');
   next();
 });
 
-// API routes
+// API routes (moved after app initialization)
+app.use('/api/auth', authRouter);
 app.use('/api/listings', listingsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/messages', messagesRouter);
@@ -45,8 +46,8 @@ app.use('/api/reviews', reviewsRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/statistics', statisticsRouter);
 
-// Enhanced health check with DB connection verification
-app.get('api/health', async (req, res) => {
+// Fixed health check endpoint path
+app.get('/api/health', async (req, res) => {
   try {
     await pool.query('SELECT 1');
     res.status(200).json({
@@ -73,7 +74,7 @@ app.use((req, res) => {
   });
 });
 
-// Enhanced error handling
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(`[${new Date().toISOString()}] Server Error:`, err.message);
   
