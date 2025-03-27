@@ -18,12 +18,18 @@ const app = express();
 // 1. Environment Validation
 const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID'];
 requiredEnvVars.forEach(varName => {
+  console.log(`Checking environment variable: ${varName}`);
+  console.log(`Value exists: ${!!process.env[varName]}`);
+  console.log(`Actual value length: ${process.env[varName]?.length || 0}`);
+  
   if (!process.env[varName]) {
-    console.error(`Missing required environment variable: ${varName}`);
-    process.exit(1);
+    console.error(`CRITICAL: Missing required environment variable: ${varName}`);
+    console.error('Current environment variables:', JSON.stringify(process.env, null, 2));
+    
+    // Instead of exiting, throw an error that can be caught
+    throw new Error(`Missing required environment variable: ${varName}`);
   }
 });
-
 // 2. Enhanced Security Middleware
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
@@ -107,5 +113,6 @@ const startServer = async () => {
 
 startServer().catch(error => {
   console.error('Failed to start server:', error);
+  console.error('Detailed error:', error.stack);
   process.exit(1);
 });

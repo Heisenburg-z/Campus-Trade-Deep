@@ -1,34 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-// ... other imports
+import express from 'express';
+import cors from 'cors';
+import pool from './db.js';
+import 'dotenv/config';
 
-const UserDashboard = () => { // Remove props
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null); // Single source of truth
-  const [activeTab, setActiveTab] = useState('dashboard');
-  // ... rest of your state
+// Route imports
+import authRouter from './routes/auth.js';
+import listingsRouter from './routes/listings.js';
+import usersRouter from './routes/users.js';
+import messagesRouter from './routes/messages.js';
+import searchRouter from './routes/search.js';
+import reviewsRouter from './routes/reviews.js';
+import categoriesRouter from './routes/categories.js';
+import statisticsRouter from './routes/statistics.js';
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem('campusTradeToken');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-      
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/me`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const userData = await response.json();
-        setUser(userData);
-      } catch (error) {
-        console.error('Error fetching user:', error);
-        navigate('/login');
-      }
-    };
+const app = express();
 
-    fetchUserData();
-  }, [navigate]);}
+// 1. Environment Validation with Detailed Logging
+const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID'];
+requiredEnvVars.forEach(varName => {
+  console.log(`Checking environment variable: ${varName}`);
+  console.log(`Value exists: ${!!process.env[varName]}`);
+  console.log(`Actual value length: ${process.env[varName]?.length || 0}`);
+  
+  if (!process.env[varName]) {
+    console.error(`CRITICAL: Missing required environment variable: ${varName}`);
+    console.error('Current environment variables:', JSON.stringify(process.env, null, 2));
+    
+    // Instead of exiting, throw an error that can be caught
+    throw new Error(`Missing required environment variable: ${varName}`);
+  }
+});
 
-  // ... rest of your component
+// Rest of the code remains the same...
+
+// Modify startServer to catch and log any environment variable errors
+startServer().catch(error => {
+  console.error('Failed to start server:', error);
+  console.error('Detailed error:', error.stack);
+  process.exit(1);
+});
