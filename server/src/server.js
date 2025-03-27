@@ -3,7 +3,7 @@ import cors from 'cors';
 import pool from './db.js';
 import 'dotenv/config';
 
-// Import route handlers
+// Route imports
 import authRouter from './routes/auth.js';
 import listingsRouter from './routes/listings.js';
 import usersRouter from './routes/users.js';
@@ -13,30 +13,41 @@ import reviewsRouter from './routes/reviews.js';
 import categoriesRouter from './routes/categories.js';
 import statisticsRouter from './routes/statistics.js';
 
-// Initialize Express app first
 const app = express();
 
-// Enhanced security middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: true,
-  maxAge: 86400
-}));
-
-// Body parsing with limits
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-
-// Rate limiting headers
-app.use((req, res, next) => {
-  res.setHeader('X-RateLimit-Limit', '100');
-  res.setHeader('X-RateLimit-Remaining', '99');
-  next();
+// 1. Environment Validation
+const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID'];
+requiredEnvVars.forEach(varName => {
+  if (!process.env[varName]) {
+    console.error(`Missing required environment variable: ${varName}`);
+    process.exit(1);
+  }
 });
 
-// API routes (moved after app initialization)
+// 2. Enhanced Security Middleware
+app.use(cors({
+  origin: process.env.CORS_ORIGIN,
+  methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+// 3. Body Parsing with Limits
+app.use(express.json({ limit: '50kb' }));
+app.use(express.urlencoded({ extended: true, limit: '50kb' }));
+
+// 4. Database Connection Verification
+const verifyDatabaseConnection = async () => {
+  try {
+    await pool.query('SELECT NOW()');
+    console.log('Database connection verified');
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    process.exit(1);
+  }
+};
+
+// 5. Route Configuration
 app.use('/api/auth', authRouter);
 app.use('/api/listings', listingsRouter);
 app.use('/api/users', usersRouter);
@@ -46,74 +57,55 @@ app.use('/api/reviews', reviewsRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/statistics', statisticsRouter);
 
-// Fixed health check endpoint path
+// 6. Health Check Endpoint
 app.get('/api/health', async (req, res) => {
   try {
     await pool.query('SELECT 1');
-    res.status(200).json({
-      status: 'ok',
+    res.json({
+      status: 'healthy',
       timestamp: new Date().toISOString(),
-      db: 'connected',
-      uptime: process.uptime()
+      database: 'connected'
     });
-  } catch (err) {
+  } catch (error) {
     res.status(503).json({
-      status: 'down',
-      timestamp: new Date().toISOString(),
-      db: 'disconnected',
-      error: err.message
+      status: 'unhealthy',
+      database: 'disconnected'
     });
   }
 });
 
-// 404 handler for undefined routes
-app.use((req, res) => {
-  res.status(404).json({
-    error: 'Endpoint not found',
-    suggestion: 'Check the API documentation at /api/docs'
+// 7. Error Handling
+app.use((err, req, res, next) => {
+  console.error(`[${new Date().toISOString()}] Error:`, err.message);
+  res.status(500).json({
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
   });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(`[${new Date().toISOString()}] Server Error:`, err.message);
+// 8. Server Initialization
+const startServer = async () => {
+  await verifyDatabaseConnection();
   
-  const response = {
-    error: 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && {
-      message: err.message,
-      stack: err.stack
-    })
+  const PORT = process.env.PORT || 8080;
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+  });
+
+  // 9. Graceful Shutdown
+  const shutdown = async (signal) => {
+    console.log(`${signal} received: Closing server`);
+    server.close(async () => {
+      await pool.end();
+      console.log('Server and database pool closed');
+      process.exit(0);
+    });
   };
 
-  res.status(err.statusCode || 500).json(response);
-});
-
-// Server configuration
-const PORT = process.env.PORT || 8080;
-const server = app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
-
-// Production-grade graceful shutdown
-const shutdown = (signal) => {
-  console.log(`${signal} received - closing server`);
-  server.close(async () => {
-    console.log('HTTP server closed');
-    await pool.end();
-    console.log('Database connection pool closed');
-    process.exit(0);
-  });
-
-  setTimeout(() => {
-    console.error('Forced shutdown after timeout');
-    process.exit(1);
-  }, 10000);
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 };
 
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
-
-// Keep-alive tuning for load balancers
-server.keepAliveTimeout = 60000;
-server.headersTimeout = 65000;
+startServer().catch(error => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+});
