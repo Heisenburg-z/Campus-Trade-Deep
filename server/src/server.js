@@ -2,8 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pool from './db.js';
 import 'dotenv/config';
-import helmet from 'helmet'; // Added security headers
-
+// APRIL 6, 2025 - FINAL VERSION
 // Route imports
 import authRouter from './routes/auth.js';
 import listingsRouter from './routes/listings.js';
@@ -16,27 +15,33 @@ import statisticsRouter from './routes/statistics.js';
 
 const app = express();
 
-// 1. Enhanced Environment Validation
-const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID', 'CORS_ORIGIN'];
+// 1. Environment Validation
+const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID'];
 requiredEnvVars.forEach(varName => {
+  console.log(`Checking environment variable: ${varName}`);
+  console.log(`Value exists: ${!!process.env[varName]}`);
+  console.log(`Actual value length: ${process.env[varName]?.length || 0}`);
+  
   if (!process.env[varName]) {
     console.error(`CRITICAL: Missing required environment variable: ${varName}`);
-    process.exit(1);
+    console.error('Current environment variables:', Object.keys(process.env).join(', '));
+    
+    // Instead of exiting, throw an error that can be caught
+    throw new Error(`Missing required environment variable: ${varName}`);
   }
 });
 
-// 2. Security Middleware
-app.use(helmet());
+// 2. Enhanced Security Middleware
 app.use(cors({
-  origin: process.env.CORS_ORIGIN,
-  methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+  origin: process.env.CORS_ORIGIN || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
-// 3. Body Parsing with sane limits
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+// 3. Body Parsing with Limits
+app.use(express.json({ limit: '50kb' }));
+app.use(express.urlencoded({ extended: true, limit: '50kb' }));
 
 // 4. Database Connection Verification
 const verifyDatabaseConnection = async () => {
@@ -59,83 +64,76 @@ app.use('/api/reviews', reviewsRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/statistics', statisticsRouter);
 
-// 6. Enhanced Health Check
+// 6. Health Check Endpoint
 app.get('/api/health', async (req, res) => {
   try {
-    const [dbResult] = await Promise.all([
-      pool.query('SELECT NOW()'),
-      new Promise(resolve => setTimeout(resolve, 500)) // Simulate async operation
-    ]);
-    
+    await pool.query('SELECT 1');
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      database: {
-        connected: true,
-        responseTime: `${dbResult.rows[0].now}`
-      }
+      database: 'connected',
+      environment: process.env.NODE_ENV || 'production'
     });
   } catch (error) {
     res.status(503).json({
       status: 'unhealthy',
-      database: 'disconnected'
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Database connection error'
     });
   }
 });
 
-// 7. Improved Error Handling
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-  console.error(`[${new Date().toISOString()}] Error: ${err.message}\n${err.stack}`);
+// 7. Error Handling
+app.use((err, req, res, next) => {
+  console.error(`[${new Date().toISOString()}] Error:`, err.message);
+  console.error('Request path:', req.path);
   
-  const response = {
-    error: 'Internal Server Error',
-    ...(process.env.NODE_ENV === 'development' && {
-      details: err.message,
-      stack: err.stack
-    })
+  res.status(err.status || 500).json({
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error',
+    status: err.status || 500
+  });
+});
+
+// 8. 404 Handler - Must be after all other routes
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    status: 404
+  });
+});
+
+// 9. Server Initialization
+const startServer = async () => {
+  await verifyDatabaseConnection();
+  
+  const PORT = process.env.PORT || 8080;
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running in ${process.env.NODE_ENV || 'production'} mode on port ${PORT}`);
+  });
+
+  // 10. Graceful Shutdown
+  const shutdown = async (signal) => {
+    console.log(`${signal} received: Closing server`);
+    server.close(async () => {
+      await pool.end();
+      console.log('Server and database pool closed');
+      process.exit(0);
+    });
+    
+    // Force close after 10 seconds if graceful shutdown fails
+    setTimeout(() => {
+      console.log('Forced shutdown after timeout');
+      process.exit(1);
+    }, 10000);
   };
 
-  res.status(err.statusCode || 500).json(response);
-});
-
-// 8. Server Initialization with proper async handling
-const startServer = async () => {
-  try {
-    await verifyDatabaseConnection();
-    
-    const PORT = process.env.PORT || 8080;
-    const server = app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-      console.log(`CORS origin allowed: ${process.env.CORS_ORIGIN}`);
-    });
-
-    // 9. Graceful Shutdown with timeout
-    const shutdown = async (signal) => {
-      console.log(`\n${signal} received: Closing server`);
-      try {
-        await new Promise((resolve, reject) => {
-          server.close(async (err) => {
-            if (err) reject(err);
-            console.log('HTTP server closed');
-            await pool.end();
-            console.log('Database pool closed');
-            resolve();
-          });
-        });
-        process.exit(0);
-      } catch (err) {
-        console.error('Shutdown error:', err);
-        process.exit(1);
-      }
-    };
-
-    process.on('SIGTERM', () => shutdown('SIGTERM'));
-    process.on('SIGINT', () => shutdown('SIGINT'));
-    
-  } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  }
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 };
 
-startServer();
+startServer().catch(error => {
+  console.error('Failed to start server:', error);
+  console.error('Detailed error:', error.stack);
+  process.exit(1);
+});
