@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pool from './db.js';
 import 'dotenv/config';
+import helmet from 'helmet'; // Added security headers
 
 // Route imports
 import authRouter from './routes/auth.js';
@@ -15,22 +16,17 @@ import statisticsRouter from './routes/statistics.js';
 
 const app = express();
 
-// 1. Environment Validation
-const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID'];
+// 1. Enhanced Environment Validation
+const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID', 'CORS_ORIGIN'];
 requiredEnvVars.forEach(varName => {
-  console.log(`Checking environment variable: ${varName}`);
-  console.log(`Value exists: ${!!process.env[varName]}`);
-  console.log(`Actual value length: ${process.env[varName]?.length || 0}`);
-  
   if (!process.env[varName]) {
     console.error(`CRITICAL: Missing required environment variable: ${varName}`);
-    console.error('Current environment variables:', JSON.stringify(process.env, null, 2));
-    
-    // Instead of exiting, throw an error that can be caught
-    throw new Error(`Missing required environment variable: ${varName}`);
+    process.exit(1);
   }
 });
-// 2. Enhanced Security Middleware
+
+// 2. Security Middleware
+app.use(helmet());
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
@@ -38,9 +34,9 @@ app.use(cors({
   credentials: true
 }));
 
-// 3. Body Parsing with Limits
-app.use(express.json({ limit: '50kb' }));
-app.use(express.urlencoded({ extended: true, limit: '50kb' }));
+// 3. Body Parsing with sane limits
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // 4. Database Connection Verification
 const verifyDatabaseConnection = async () => {
@@ -63,14 +59,21 @@ app.use('/api/reviews', reviewsRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/statistics', statisticsRouter);
 
-// 6. Health Check Endpoint
+// 6. Enhanced Health Check
 app.get('/api/health', async (req, res) => {
   try {
-    await pool.query('SELECT 1');
+    const [dbResult] = await Promise.all([
+      pool.query('SELECT NOW()'),
+      new Promise(resolve => setTimeout(resolve, 500)) // Simulate async operation
+    ]);
+    
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      database: 'connected'
+      database: {
+        connected: true,
+        responseTime: `${dbResult.rows[0].now}`
+      }
     });
   } catch (error) {
     res.status(503).json({
@@ -80,39 +83,59 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-// 7. Error Handling
-app.use((err, req, res, next) => {
-  console.error(`[${new Date().toISOString()}] Error:`, err.message);
-  res.status(500).json({
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
-  });
-});
-
-// 8. Server Initialization
-const startServer = async () => {
-  await verifyDatabaseConnection();
+// 7. Improved Error Handling
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+  console.error(`[${new Date().toISOString()}] Error: ${err.message}\n${err.stack}`);
   
-  const PORT = process.env.PORT || 8080;
-  const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-  });
-
-  // 9. Graceful Shutdown
-  const shutdown = async (signal) => {
-    console.log(`${signal} received: Closing server`);
-    server.close(async () => {
-      await pool.end();
-      console.log('Server and database pool closed');
-      process.exit(0);
-    });
+  const response = {
+    error: 'Internal Server Error',
+    ...(process.env.NODE_ENV === 'development' && {
+      details: err.message,
+      stack: err.stack
+    })
   };
 
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
-  process.on('SIGINT', () => shutdown('SIGINT'));
+  res.status(err.statusCode || 500).json(response);
+});
+
+// 8. Server Initialization with proper async handling
+const startServer = async () => {
+  try {
+    await verifyDatabaseConnection();
+    
+    const PORT = process.env.PORT || 8080;
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+      console.log(`CORS origin allowed: ${process.env.CORS_ORIGIN}`);
+    });
+
+    // 9. Graceful Shutdown with timeout
+    const shutdown = async (signal) => {
+      console.log(`\n${signal} received: Closing server`);
+      try {
+        await new Promise((resolve, reject) => {
+          server.close(async (err) => {
+            if (err) reject(err);
+            console.log('HTTP server closed');
+            await pool.end();
+            console.log('Database pool closed');
+            resolve();
+          });
+        });
+        process.exit(0);
+      } catch (err) {
+        console.error('Shutdown error:', err);
+        process.exit(1);
+      }
+    };
+
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
+    process.on('SIGINT', () => shutdown('SIGINT'));
+    
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
 };
 
-startServer().catch(error => {
-  console.error('Failed to start server:', error);
-  console.error('Detailed error:', error.stack);
-  process.exit(1);
-});
+startServer();
