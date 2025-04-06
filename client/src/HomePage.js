@@ -4,98 +4,403 @@ import { FaRegBell } from 'react-icons/fa';
 import AuthModal from './AuthModal';
 import axios from 'axios';
 
+import {
+  Star, Clock, MapPin, Tag, MessageCircle, ShoppingBag, Search, TrendingUp,
+  Bell, Menu, X, BookOpen, MessageSquare, User
+} from 'lucide-react';
 
-const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => (
-  <nav className="bg-white shadow-lg sticky top-0 z-50">
-    <div className="max-w-7xl mx-auto px-4">
-      <div className="flex justify-between items-center h-16">
-        <div className="flex items-center">
-          <span className="text-2xl font-bold text-indigo-600">CampusTrade</span>
+const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
+
+  return (
+    <nav className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex items-center">
+            <a href="/" className="flex items-center">
+              <div className="flex items-center gap-2">
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 w-8 h-8 rounded-lg flex items-center justify-center">
+                  <ShoppingBag className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">CampusTrade</span>
+              </div>
+            </a>
+          </div>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            <a href="/marketplace" className="text-gray-600 hover:text-indigo-600 font-medium flex items-center gap-1">
+              <ShoppingBag className="w-4 h-4" />
+              <span>Marketplace</span>
+            </a>
+            <a href="/courses" className="text-gray-600 hover:text-indigo-600 font-medium flex items-center gap-1">
+              <BookOpen className="w-4 h-4" />
+              <span>Courses</span>
+            </a>
+            <a href="/messages" className="text-gray-600 hover:text-indigo-600 font-medium flex items-center gap-1">
+              <MessageSquare className="w-4 h-4" />
+              <span>Messages</span>
+            </a>
+            
+            {/* Search button */}
+            <button 
+              onClick={toggleSearch}
+              className="text-gray-600 hover:text-indigo-600 transition p-2 rounded-full hover:bg-gray-100"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+          </div>
+          
+          {/* User section */}
+          <div className="hidden md:flex items-center">
+            {user ? (
+              <div className="flex items-center gap-4">
+                {/* Notifications */}
+                <button className="text-gray-600 hover:text-indigo-600 transition relative p-2 rounded-full hover:bg-gray-100">
+                  <Bell className="w-5 h-5" />
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                    3
+                  </span>
+                </button>
+                
+                {/* User profile */}
+                <div className="flex items-center gap-2 group relative">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md">
+                    {user.username.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-gray-700 font-medium">{user.username}</span>
+                  
+                  {/* Dropdown menu */}
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right">
+                    <div className="py-1">
+                      <a href="/profile" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                        Profile
+                      </a>
+                      <a href="/settings" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                        Settings
+                      </a>
+                      <a href="/listings" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                        My Listings
+                      </a>
+                      <button 
+                        onClick={onLogout}
+                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={onLoginClick}
+                  className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition shadow-md hover:shadow-lg"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={onSignupClick}
+                  className="border-2 border-indigo-600 text-indigo-600 px-5 py-2 rounded-lg hover:bg-indigo-50 transition"
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
+          </div>
+          
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <button 
+              onClick={toggleMenu}
+              className="text-gray-600 hover:text-indigo-600 transition p-2"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
         
-        <div className="hidden md:flex items-center space-x-8">
-          {user ? (
-            <div className="flex items-center gap-4">
-              <button className="text-gray-600 hover:text-indigo-600 transition">
-                <FaRegBell className="w-5 h-5" />
-              </button>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white">
-                  {user.username.charAt(0).toUpperCase()}
+        {/* Mobile menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-gray-100">
+            <div className="flex flex-col gap-3">
+              <a href="/marketplace" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+                Marketplace
+              </a>
+              <a href="/courses" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+                Courses
+              </a>
+              <a href="/messages" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+                Messages
+              </a>
+              
+              {user ? (
+                <>
+                  <a href="/profile" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+                    Profile
+                  </a>
+                  <a href="/listings" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+                    My Listings
+                  </a>
+                  <button 
+                    onClick={onLogout}
+                    className="px-4 py-2 text-left text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <div className="flex flex-col gap-2 px-4 pt-2">
+                  <button 
+                    onClick={onLoginClick}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={onSignupClick}
+                    className="border-2 border-indigo-600 text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition"
+                  >
+                    Sign Up
+                  </button>
                 </div>
-                <span className="text-gray-700">{user.username}</span>
-              </div>
+              )}
+            </div>
+          </div>
+        )}
+        
+        {/* Search bar */}
+        {isSearchOpen && (
+          <div className="absolute left-0 right-0 bg-white shadow-md p-4 transition-all duration-300">
+            <div className="max-w-3xl mx-auto relative">
+              <input 
+                type="text" 
+                placeholder="Search for textbooks, electronics, furniture..." 
+                className="w-full py-2 px-4 pl-10 border-2 border-indigo-200 rounded-lg focus:outline-none focus:border-indigo-600"
+              />
+              <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
               <button 
-                onClick={onLogout}
-                className="text-gray-600 hover:text-indigo-600 transition"
+                onClick={toggleSearch}
+                className="absolute right-3 top-2.5 text-gray-400 hover:text-indigo-600"
               >
-                Logout
+                <X className="w-5 h-5" />
               </button>
             </div>
-          ) : (
-            <>
-              <button 
-                onClick={onLoginClick}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-              >
-                Login
-              </button>
-              <button
-                onClick={onSignupClick}
-                className="border-2 border-indigo-600 text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition"
-              >
-                Sign Up
-              </button>
-            </>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+};
+
+const HeroSection = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+  
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-violet-700 text-white">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-white blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-indigo-300 blur-3xl"></div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-6 py-24 md:py-32 relative z-10">
+        <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            Trade Smart,
+            <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-pink-300">
+              Campus Style
+            </span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto font-light">
+            Buy, sell, and trade items with fellow students securely on our campus marketplace
+          </p>
+          
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
+            <button className="group flex items-center gap-2 bg-white text-indigo-700 px-8 py-4 rounded-full font-medium hover:bg-gray-50 hover:shadow-lg transform hover:-translate-y-1 transition-all w-full sm:w-auto">
+              <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span>Sell Now</span>
+            </button>
+            
+            <button className="group flex items-center gap-2 bg-indigo-800 bg-opacity-30 border-2 border-white px-8 py-4 rounded-full font-medium hover:bg-white hover:text-indigo-700 transform hover:-translate-y-1 transition-all w-full sm:w-auto">
+              <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span>Browse Items</span>
+            </button>
+          </div>
+          
+          {/* Stats section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+            <div className="bg-white bg-opacity-10 p-4 rounded-xl backdrop-blur-sm border border-white border-opacity-20">
+              <div className="font-bold text-3xl mb-1">1,200+</div>
+              <div className="text-indigo-100">Active listings</div>
+            </div>
+            <div className="bg-white bg-opacity-10 p-4 rounded-xl backdrop-blur-sm border border-white border-opacity-20">
+              <div className="font-bold text-3xl mb-1">3,000+</div>
+              <div className="text-indigo-100">Happy students</div>
+            </div>
+            <div className="bg-white bg-opacity-10 p-4 rounded-xl backdrop-blur-sm border border-white border-opacity-20">
+              <div className="font-bold text-3xl mb-1">15+</div>
+              <div className="text-indigo-100">Universities</div>
+            </div>
+          </div>
+          
+          {/* Trending badge */}
+          <div className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-1 bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
+            <TrendingUp className="w-4 h-4" />
+            <span>Trending on campus</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProductCard = ({ product }) => {
+  // Helper function to render star rating
+  const renderRating = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    
+    for (let i = 0; i < 5; i++) {
+      if (i < fullStars) {
+        // Full star
+        stars.push(<Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />);
+      } else if (i === fullStars && hasHalfStar) {
+        // Half star - using a filled star with reduced opacity for simplicity
+        stars.push(<Star key={i} size={16} className="fill-yellow-400 text-yellow-400 opacity-60" />);
+      } else {
+        // Empty star
+        stars.push(<Star key={i} size={16} className="text-gray-300" />);
+      }
+    }
+    
+    return (
+      <div className="flex items-center">
+        {stars}
+        <span className="ml-1 text-sm text-gray-600">({product.ratingCount || 0})</span>
+      </div>
+    );
+  };
+
+  // Calculate time ago
+  const getTimeAgo = (datePosted) => {
+    return "2 days ago"; // This would be replaced with actual logic
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group">
+      {/* Badge for special statuses - conditionally rendered */}
+      {product.isNew && (
+        <div className="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+          NEW
+        </div>
+      )}
+      
+      {/* Image container with hover zoom effect */}
+      <div className="relative overflow-hidden h-52">
+        <img 
+          src={product.image} 
+          alt={product.title} 
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+          <div className="p-4 w-full">
+            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors duration-300">
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      {/* Content area */}
+      <div className="p-4">
+        {/* Category and time ago */}
+        <div className="flex justify-between items-center mb-2 text-xs text-gray-500">
+          <div className="flex items-center">
+            <Tag size={14} className="mr-1" />
+            <span>{product.category}</span>
+          </div>
+          <div className="flex items-center">
+            <Clock size={14} className="mr-1" />
+            <span>{getTimeAgo(product.datePosted)}</span>
+          </div>
+        </div>
+        
+        {/* Title */}
+        <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate group-hover:text-indigo-600 transition-colors">
+          {product.title}
+        </h3>
+        
+        {/* Description */}
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+          {product.description}
+        </p>
+        
+        {/* Price and condition */}
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-xl font-bold text-indigo-600">${product.price}</span>
+          {product.condition && (
+            <span className="bg-indigo-50 text-indigo-700 text-xs px-2 py-1 rounded-full">
+              {product.condition}
+            </span>
           )}
         </div>
-      </div>
-    </div>
-  </nav>
-);
-
-
-const HeroSection = () => (
-  <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-20">
-    <div className="max-w-7xl mx-auto px-4 text-center">
-      <h1 className="text-4xl md:text-6xl font-bold mb-6">Trade Smart, Campus Style</h1>
-      <p className="text-xl mb-8">Buy, sell, and trade items with fellow students securely</p>
-      <div className="flex justify-center gap-4">
-        <button className="bg-white text-indigo-600 px-8 py-3 rounded-full hover:bg-gray-100 transition">
-          Sell Now
-        </button>
-        <button className="border-2 border-white px-8 py-3 rounded-full hover:bg-white hover:text-indigo-600 transition">
-          Browse Items
-        </button>
-      </div>
-    </div>
-  </div>
-);
-
-const ProductCard = ({ product }) => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
-    <img 
-      src={product.image} 
-      alt={product.title} 
-      className="w-full h-48 object-cover"
-    />
-    <div className="p-4">
-      <div className="flex justify-between items-start mb-2">
-        <h3 className="text-lg font-semibold truncate">{product.title}</h3>
-        <span className="bg-indigo-100 text-indigo-800 text-sm px-2 py-1 rounded">
-          {product.category}
-        </span>
-      </div>
-      <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
-      <div className="flex justify-between items-center">
-        <span className="text-xl font-bold text-indigo-600">${product.price}</span>
-        <div className="flex items-center">
-          <span className="text-sm text-gray-500">Posted by {product.seller}</span>
+        
+        {/* Divider */}
+        <div className="border-t border-gray-100 my-3"></div>
+        
+        {/* Seller info and rating */}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            {product.sellerAvatar ? (
+              <img 
+                src={product.sellerAvatar} 
+                alt={product.seller}
+                className="w-6 h-6 rounded-full mr-2"
+              />
+            ) : (
+              <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-2">
+                {product.seller.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <span className="text-sm font-medium text-gray-700">{product.seller}</span>
+          </div>
+          
+          {/* Seller rating */}
+          {renderRating(product.sellerRating || 0)}
+        </div>
+        
+        {/* Location and message button */}
+        <div className="flex justify-between items-center mt-2 text-xs">
+          {product.location && (
+            <div className="flex items-center text-gray-500">
+              <MapPin size={14} className="mr-1" />
+              <span>{product.location}</span>
+            </div>
+          )}
+          <button className="flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
+            <MessageCircle size={14} className="mr-1" />
+            <span>Message</span>
+          </button>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+
 
 const ProductGrid = () => {
   const [products, setProducts] = useState([

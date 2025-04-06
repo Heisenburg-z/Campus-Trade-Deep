@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FaUser, FaPlus, FaShoppingCart, FaExchangeAlt, FaChartLine, FaRegBell, FaImage } from 'react-icons/fa';
+import { 
+  FaUser, FaPlus, FaShoppingCart, FaExchangeAlt, FaChartLine, 
+  FaRegBell, FaImage, FaComments, FaPaperPlane 
+} from 'react-icons/fa';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, ResponsiveContainer } from 'recharts';
 import ProductCard from './ProductCard';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -18,6 +20,11 @@ const UserDashboard = () => {
     category: '',
     image: ''
   });
+  const [conversations, setConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -40,7 +47,81 @@ const UserDashboard = () => {
     };
 
     fetchUserData();
-  }, [navigate]);
+
+    if (activeTab === 'messages') {
+      const fetchConversations = async () => {
+        setIsLoading(true);
+        try {
+          const token = localStorage.getItem('campusTradeToken');
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/messages/conversations`,
+            { headers: { Authorization: `Bearer ${token}` }}
+          );
+          setConversations(response.data);
+        } catch (error) {
+          console.error('Error fetching conversations:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchConversations();
+    }
+  }, [navigate, activeTab]);
+
+  const handleSellItem = (e) => {
+    e.preventDefault();
+    setListings([...listings, { ...newListing, id: Date.now() }]);
+    setNewListing({
+      title: '',
+      description: '',
+      price: '',
+      category: '',
+      image: ''
+    });
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewListing({...newListing, image: reader.result});
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('campusTradeToken');
+    navigate('/');
+  };
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !selectedConversation) return;
+
+    try {
+      const token = localStorage.getItem('campusTradeToken');
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/messages`,
+        {
+          conversation_id: selectedConversation.conversation_id,
+          content: newMessage
+        },
+        { headers: { Authorization: `Bearer ${token}` }}
+      );
+      
+      setMessages([...messages, response.data]);
+      setNewMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
+
+  if (!user) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   // Sample data
   const userStats = {
     itemsBought: 109,
@@ -65,40 +146,9 @@ const UserDashboard = () => {
     { name: 'Clothing', value: 10 },
   ];
 
-  const handleSellItem = (e) => {
-    e.preventDefault();
-    setListings([...listings, { ...newListing, id: Date.now() }]);
-    setNewListing({
-      title: '',
-      description: '',
-      price: '',
-      category: '',
-      image: ''
-    });
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewListing({...newListing, image: reader.result});
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  const handleLogout = () => {
-    localStorage.removeItem('campusTradeToken');
-    navigate('/');
-  };
-
-  if (!user) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50">
-      {/* Animated Navbar */}
+      {/* Navigation */}
       <nav className="bg-white shadow-lg transform transition-all duration-300 hover:shadow-xl">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
@@ -115,7 +165,7 @@ const UserDashboard = () => {
             
             <div className="flex items-center space-x-6">
               <div className="hidden md:flex space-x-6">
-                {['dashboard', 'buy', 'sell', 'trades'].map((tab) => (
+                {['dashboard', 'buy', 'sell', 'trades', 'messages'].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -129,6 +179,7 @@ const UserDashboard = () => {
                     {tab === 'buy' && <FaShoppingCart className="mr-2" />}
                     {tab === 'sell' && <FaPlus className="mr-2" />}
                     {tab === 'trades' && <FaExchangeAlt className="mr-2" />}
+                    {tab === 'messages' && <FaComments className="mr-2" />}
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
                   </button>
                 ))}
@@ -166,11 +217,86 @@ const UserDashboard = () => {
         </div>
       </nav>
 
-      {/* Dashboard Content */}
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+        {/* Messages Tab */}
+        {activeTab === 'messages' && (
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <h2 className="text-3xl font-bold text-gray-800 mb-8">Messages</h2>
+            <div className="flex h-[600px] border rounded-xl overflow-hidden">
+              <div className="w-1/3 border-r overflow-y-auto">
+                {conversations.map(conv => (
+                  <div
+                    key={conv.conversation_id}
+                    onClick={() => setSelectedConversation(conv)}
+                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${
+                      selectedConversation?.conversation_id === conv.conversation_id ? 'bg-indigo-50' : ''
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                        {conv.participant1 === user.username ? 
+                          conv.participant2.charAt(0) : conv.participant1.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-semibold">
+                          {conv.participant1 === user.username ? conv.participant2 : conv.participant1}
+                        </p>
+                        <p className="text-sm text-gray-500 truncate">{conv.last_message}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex-1 flex flex-col">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  {messages.map(message => (
+                    <div
+                      key={message.message_id}
+                      className={`flex ${message.sender_id === user.user_id ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[70%] rounded-lg p-3 ${
+                          message.sender_id === user.user_id 
+                            ? 'bg-indigo-600 text-white' 
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        <p className="text-sm">{message.content}</p>
+                        <p className="text-xs mt-1 opacity-70">
+                          {new Date(message.sent_at).toLocaleTimeString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <form onSubmit={handleSendMessage} className="border-t p-4">
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Type your message..."
+                      className="flex-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
+                    >
+                      <FaPaperPlane className="w-5 h-5" />
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
           <>
-            {/* Welcome Card */}
             <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 opacity-10" />
               <div className="flex items-center justify-between">
@@ -188,7 +314,6 @@ const UserDashboard = () => {
               </div>
             </div>
 
-            {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {Object.entries(userStats).map(([key, value]) => (
                 <div 
@@ -210,7 +335,6 @@ const UserDashboard = () => {
               ))}
             </div>
 
-            {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
               <div className="bg-white p-6 rounded-xl shadow-md">
                 <h3 className="text-xl font-semibold mb-4">Sales Overview</h3>
@@ -252,13 +376,12 @@ const UserDashboard = () => {
           </>
         )}
 
-        {/* Sell Item Section */}
+        {/* Sell Tab */}
         {activeTab === 'sell' && (
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-8">List New Item</h2>
             <form onSubmit={handleSellItem} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Image Upload */}
                 <div className="space-y-4">
                   <label className="block text-gray-700 text-sm font-medium">Item Images</label>
                   <div className="relative group">
@@ -285,7 +408,6 @@ const UserDashboard = () => {
                   </div>
                 </div>
 
-                {/* Form Fields */}
                 <div className="space-y-6">
                   <div>
                     <label className="block text-gray-700 text-sm font-medium mb-2">Item Title</label>
@@ -348,7 +470,7 @@ const UserDashboard = () => {
           </div>
         )}
 
-        {/* Buy Items Section */}
+        {/* Buy Tab */}
         {activeTab === 'buy' && (
           <div className="space-y-8">
             <div className="bg-white p-6 rounded-2xl shadow-lg">
@@ -366,12 +488,11 @@ const UserDashboard = () => {
           </div>
         )}
 
-        {/* Trades Section */}
+        {/* Trades Tab */}
         {activeTab === 'trades' && (
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-8">Trade Management</h2>
             <div className="space-y-6">
-              {/* Trade Request Card */}
               <div className="p-6 bg-indigo-50 rounded-xl border-l-4 border-indigo-600 hover:bg-white transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
@@ -381,7 +502,7 @@ const UserDashboard = () => {
                       alt="Trader"
                     />
                     <div>
-                      <h3 className="font-semibold text-lg">Trade request from JaneDoe</h3>
+                      <h3 className="font-semibold text-lg">Trade request from Thapelo Ndlovu</h3>
                       <p className="text-gray-600">Offering: Psychology Textbook (2022 Edition)</p>
                     </div>
                   </div>
@@ -396,7 +517,6 @@ const UserDashboard = () => {
                 </div>
               </div>
 
-              {/* Trade History Chart */}
               <div className="bg-white p-6 rounded-xl shadow-md mt-8">
                 <h3 className="text-xl font-semibold mb-4">Trade History</h3>
                 <div className="h-64">

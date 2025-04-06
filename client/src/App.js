@@ -12,6 +12,7 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            
             <Route path="/login" element={<AuthModal />} />
             
             <Route path="/dashboard" element={

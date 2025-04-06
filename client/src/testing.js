@@ -1,41 +1,110 @@
-import express from 'express';
-import cors from 'cors';
-import pool from './db.js';
-import 'dotenv/config';
+// 1. Update Imports at the Top
+import { 
+  // Keep existing icons and add:
+  FaComments, FaPaperPlane 
+} from 'react-icons/fa';
+import axios from 'axios';  // Add if not already imported
 
-// Route imports
-import authRouter from './routes/auth.js';
-import listingsRouter from './routes/listings.js';
-import usersRouter from './routes/users.js';
-import messagesRouter from './routes/messages.js';
-import searchRouter from './routes/search.js';
-import reviewsRouter from './routes/reviews.js';
-import categoriesRouter from './routes/categories.js';
-import statisticsRouter from './routes/statistics.js';
+// 2. Add New State Variables (inside the component)
 
-const app = express();
 
-// 1. Environment Validation with Detailed Logging
-const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID'];
-requiredEnvVars.forEach(varName => {
-  console.log(`Checking environment variable: ${varName}`);
-  console.log(`Value exists: ${!!process.env[varName]}`);
-  console.log(`Actual value length: ${process.env[varName]?.length || 0}`);
-  
-  if (!process.env[varName]) {
-    console.error(`CRITICAL: Missing required environment variable: ${varName}`);
-    console.error('Current environment variables:', JSON.stringify(process.env, null, 2));
-    
-    // Instead of exiting, throw an error that can be caught
-    throw new Error(`Missing required environment variable: ${varName}`);
-  }
-});
+// 3. Add to Existing useEffect (for fetching conversations)
+useEffect(() => {
 
-// Rest of the code remains the same...
+}, [activeTab]);
 
-// Modify startServer to catch and log any environment variable errors
-startServer().catch(error => {
-  console.error('Failed to start server:', error);
-  console.error('Detailed error:', error.stack);
-  process.exit(1);
-});
+// 4. Add Messages Tab to Navigation (update the tab buttons array)
+{['dashboard', 'buy', 'sell', 'trades', 'messages'].map((tab) => (
+  <button
+    key={tab}
+    onClick={() => setActiveTab(tab)}
+    className={`flex items-center px-4 py-2 rounded-lg transition-all ${
+      activeTab === tab 
+        ? 'bg-indigo-600 text-white shadow-md'
+        : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-700'
+    }`}
+  >
+    {tab === 'messages' && <FaComments className="mr-2" />}
+    {/* Keep other icons for other tabs */}
+    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+  </button>
+))}
+
+// 5. Add Messages Tab Content (add to existing return statement)
+{activeTab === 'messages' && (
+  <div className="bg-white rounded-2xl shadow-lg p-8">
+    <h2 className="text-3xl font-bold text-gray-800 mb-8">Messages</h2>
+    <div className="flex h-[600px] border rounded-xl overflow-hidden">
+      {/* Conversations List */}
+      <div className="w-1/3 border-r overflow-y-auto">
+        {conversations.map(conv => (
+          <div
+            key={conv.conversation_id}
+            onClick={() => setSelectedConversation(conv)}
+            className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${
+              selectedConversation?.conversation_id === conv.conversation_id ? 'bg-indigo-50' : ''
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                {conv.participant1 === user.username ? 
+                  conv.participant2.charAt(0) : conv.participant1.charAt(0)}
+              </div>
+              <div>
+                <p className="font-semibold">
+                  {conv.participant1 === user.username ? conv.participant2 : conv.participant1}
+                </p>
+                <p className="text-sm text-gray-500 truncate">{conv.last_message}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Messages Container */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.map(message => (
+            <div
+              key={message.message_id}
+              className={`flex ${message.sender_id === user.user_id ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className={`max-w-[70%] rounded-lg p-3 ${
+                  message.sender_id === user.user_id 
+                    ? 'bg-indigo-600 text-white' 
+                    : 'bg-gray-100 text-gray-800'
+                }`}
+              >
+                <p className="text-sm">{message.content}</p>
+                <p className="text-xs mt-1 opacity-70">
+                  {new Date(message.sent_at).toLocaleTimeString()}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Message Input */}
+        <form onSubmit={handleSendMessage} className="border-t p-4">
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message..."
+              className="flex-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
+            >
+              <FaPaperPlane className="w-5 h-5" />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+)}
