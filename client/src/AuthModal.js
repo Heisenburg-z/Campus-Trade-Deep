@@ -123,7 +123,8 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
       setLoading(true);
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/auth/google`,
-        { token: credentialResponse.credential }
+        { token: credentialResponse.credential },
+        { withCredentials: true }
       );
       
       localStorage.setItem('campusTradeToken', response.data.token);
