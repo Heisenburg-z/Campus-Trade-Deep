@@ -350,7 +350,7 @@ const ProductCard = ({ product }) => {
         
         {/* Price and condition */}
         <div className="flex justify-between items-center mb-3">
-          <span className="text-xl font-bold text-indigo-600">${product.price}</span>
+          <span className="text-xl font-bold text-indigo-600">R{product.price}</span>
           {product.condition && (
             <span className="bg-indigo-50 text-indigo-700 text-xs px-2 py-1 rounded-full">
               {product.condition}
