@@ -69,8 +69,7 @@ A modern campus marketplace platform connecting students to buy/sell textbooks, 
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/campus-trade.git
-
+git clone 
 # Install dependencies
 cd client && npm install
 cd ../server && npm install
