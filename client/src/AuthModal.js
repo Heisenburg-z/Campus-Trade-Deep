@@ -127,7 +127,7 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
       setLoading(true);
       const BACKEND_URL = 'https://campus-trade-deep-production.up.railway.app';
       const response = await axios.post(
-        `${BACKEND_URL}/api/auth/google`,
+        `${BACKEND_URL}/api/auth/google`,//if fail check this, /api/users/auth/google
         { token: credentialResponse.credential },
         { withCredentials: true }
       );
