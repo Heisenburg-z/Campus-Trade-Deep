@@ -1,7 +1,7 @@
 import React from 'react';
 import { Star, Tag, Clock, MapPin, MessageCircle } from 'lucide-react';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onViewDetails, onMessageClick}) => {
   // Helper function to render star rating
   const renderRating = (rating) => {
     const stars = [];
@@ -52,7 +52,8 @@ const ProductCard = ({ product }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
           <div className="p-4 w-full">
-            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors duration-300">
+            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors duration-300"
+              onClick={onViewDetails} >
               View Details
             </button>
           </div>
@@ -125,7 +126,8 @@ const ProductCard = ({ product }) => {
               <span>{product.location}</span>
             </div>
           )}
-          <button className="flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
+          <button className="flex items-center text-indigo-600 hover:text-indigo-800 font-medium"
+          onClick={() => onMessageClick(product.sellerId, product.id)} >
             <MessageCircle size={14} className="mr-1" />
             <span>Message</span>
           </button>
