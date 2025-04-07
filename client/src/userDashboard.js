@@ -48,6 +48,12 @@ const UserDashboard = () => {
   };
   
   const handleMessageClick = async (sellerId, listingId) => {
+
+    // In handleMessageClick
+if (!sellerId || !listingId) {
+  console.error('Missing sellerId or listingId');
+  return;
+}
     setActiveTab('messages');
     setSelectedSeller({ id: sellerId, listingId });
   
@@ -57,6 +63,7 @@ const UserDashboard = () => {
         (conv.participant1_id === user.user_id && conv.participant2_id === sellerId) ||
         (conv.participant1_id === sellerId && conv.participant2_id === user.user_id)
       );
+      
       
       if (existingConv) {
         setSelectedConversation(existingConv);

@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
       text: `
         SELECT 
           l.listing_id,
+          l.user_id AS seller_id, 
           l.price,
           l.condition,
           l.created_at,
