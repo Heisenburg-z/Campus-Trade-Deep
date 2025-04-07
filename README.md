@@ -1,84 +1,83 @@
+# 🚀 CampusTrade - Campus Marketplace Platform
 
-# **React Basic Portfolio**  
+[![Live Demo](https://img.shields.io/badge/Live_Demo-CampusTrade-brightgreen?style=for-the-badge&logo=vercel)](https://campus-trade-deep.vercel.app/)
+[![GitHub License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
+![Tech Stack](https://img.shields.io/badge/React-TailwindCSS-06B6D4?style=for-the-badge&logo=tailwind-css)
 
-Welcome to my portfolio project, built with **React** and deployed using **Azure Static Web Apps**. This project serves as a platform to showcase my skills, projects, and professional journey, offering a clean and interactive design for users to explore.  
+A modern campus marketplace platform connecting students to buy/sell textbooks, electronics, and more. Built with cutting-edge technologies and deployed on modern cloud infrastructure.
 
----
+![CampusTrade Screenshot](https://via.placeholder.com/800x400.png?text=CampusTrade+Showcase)
 
-## **Overview**  
-This portfolio was developed using [Create React App](https://github.com/facebook/create-react-app), ensuring a robust and scalable structure for the application. Leveraging the power of **React**, it provides a dynamic user experience with reusable components and a responsive design.  
+## 🌟 Features
 
-Deployed on **Azure Static Web Apps**, the project demonstrates seamless integration with modern hosting solutions, making it fast, reliable, and easy to maintain.  
+- **🛒 Campus-Centric Marketplace**
+  - Buy/Sell textbooks, electronics, furniture
+  - Advanced product filtering & search
+  - Interactive product cards with zoom effect
 
----
+- **📊 Smart Dashboard**
+  - Real-time sales analytics
+  - Interactive charts (Line/Bar/Pie)
+  - Trade performance metrics
+  - Activity timeline
 
-## **Key Features**  
-- **Dynamic Project Showcase**: Highlights my professional and personal projects with detailed descriptions and live links.  
-- **Responsive Design**: Fully optimized for desktop, tablet, and mobile viewing.  
-- **Interactive Components**: Uses React’s state management for smooth navigation and interactivity.  
-- **Scalable Architecture**: Built to easily add new sections or features as needed.  
+- **🔐 Secure Auth System**
+  - JWT token authentication
+  - Protected routes
+  - Role-based access control
 
----
+- **💬 Real-Time Messaging**
+  - In-app chat system
+  - Conversation threads
+  - Message notifications
 
-## **Technology Stack**  
-- **Frontend**: React.js  
-- **Deployment**: Azure Static Web Apps  
-- **Build Tool**: Create React App  
+- **🚀 Modern Architecture**
+  - Vercel Edge Network (Frontend)
+  - Railway Serverless Backend
+  - Neon PostgreSQL Database
 
----
+## 🛠 Tech Stack
 
-## **Getting Started**  
+**Frontend**  
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite)
 
-### **Prerequisites**  
-To run this project locally, you’ll need:  
-- Node.js installed on your machine.  
-- A package manager like npm or yarn.  
+**Backend**  
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs)
+![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql)
 
-### **Setup Instructions**  
-1. Clone this repository:  
-   ```bash  
-   git clone https://github.com/your-username/react-portfolio.git  
-   cd react-portfolio  
-   ```  
+**Infrastructure**  
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel)
+![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway)
+![Neon](https://img.shields.io/badge/Neon-00E59B?style=for-the-badge&logo=neon)
 
-2. Install dependencies:  
-   ```bash  
-   npm install  
-   ```  
+## 📚 Documentation
 
-3. Start the development server:  
-   ```bash  
-   npm start  
-   ```  
-   The application will run at `http://localhost:3000/`.  
+[![GitBook](https://img.shields.io/badge/GitBook-3884FF?style=for-the-badge&logo=gitbook)](https://campus-trade.gitbook.io/docs)
+[![API Docs](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger)](https://api.campustrade.dev/docs)
 
-4. To build for production:  
-   ```bash  
-   npm run build  
-   ```  
-   This will generate optimized static files for deployment.  
+**Key Documentation Sections:**
+- System Architecture
+- API Reference
+- Database Schema
+- Deployment Guide
+- Contribution Guidelines
 
----
+## 🚀 Quick Start
 
-## **Deployment**  
-This project is deployed using **Azure Static Web Apps**. Follow the [React Quickstart Guide](https://docs.microsoft.com/azure/static-web-apps/getting-started?tabs=react) for instructions on deploying React apps to Azure.  
+```bash
+# Clone repository
+git clone https://github.com/yourusername/campus-trade.git
 
----
+# Install dependencies
+cd client && npm install
+cd ../server && npm install
 
-## **Contributing**  
-Feedback and contributions are welcome! Feel free to submit issues or pull requests to enhance this project further.  
+# Configure environment variables
+cp .env.example .env
 
----
-
-## **License**  
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).  
-
----
-
-## **Acknowledgments**  
-- [React](https://reactjs.org/) for providing the foundation of this project.  
-- [Azure Static Web Apps](https://docs.microsoft.com/azure/static-web-apps/overview) for seamless deployment and hosting.  
-- [Create React App](https://github.com/facebook/create-react-app) for the project bootstrap.  
-
----
-# Campus-Trade-Deep
+# Start development servers
+npm run dev (client)
+npm run start:dev (server)
