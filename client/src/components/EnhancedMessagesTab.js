@@ -24,12 +24,15 @@ const EnhancedMessagesTab = ({ user }) => {
           { headers: { Authorization: `Bearer ${token}` }}
         );
         
+
         const formattedConversations = response.data.map(conv => ({
           ...conv,
+          participant1_id: conv.user1_id,  // Add these
+          participant2_id: conv.user2_id,  // Add these
           participant1: conv.participant1,
           participant2: conv.participant2,
-          last_message: conv.last_message || 'No messages yet',
-          unread: 0 // You'll need to implement actual unread count from your backend
+          last_message: conv.last_message || 'Start a conversation with sellers by clicking the message button on any product. Your inbox is currently empty',
+          unread: 0
         }));
         
         setConversations(formattedConversations);
@@ -66,14 +69,19 @@ const EnhancedMessagesTab = ({ user }) => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !selectedConversation) return;
-
+  
     try {
       const token = localStorage.getItem('campusTradeToken');
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/messages`,
         {
-          conversation_id: selectedConversation.conversation_id,
-          content: newMessage
+          conversationId: selectedConversation.conversation_id, // Changed from conversation_id
+          content: newMessage.trim(),
+          // Add these if creating new conversation:
+          listingId: selectedConversation.listing_id,
+          recipientId: selectedConversation.participant1 === user.username 
+            ? selectedConversation.participant2_id 
+            : selectedConversation.participant1_id
         },
         { headers: { Authorization: `Bearer ${token}` }}
       );
@@ -82,6 +90,7 @@ const EnhancedMessagesTab = ({ user }) => {
       setNewMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
+      setError(error.response?.data?.error || 'Failed to send message');
     }
   };
 
