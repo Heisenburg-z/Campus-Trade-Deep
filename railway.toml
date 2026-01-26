@@ -1,5 +1,18 @@
 [build]
-builder = "nixpacks"
+builder = "DOCKERFILE"
+dockerfilePath = "./Dockerfile"
 
 [deploy]
-startCommand = "cd server && npm start"
+startCommand = ""
+healthcheckPath = "/api/health"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
+
+# Environment variables (set these in Railway dashboard)
+[environments.production.variables]
+NODE_ENV = "production"
+
+# Service ports
+[[services]]
+port = 8080
+protocol = "TCP"
