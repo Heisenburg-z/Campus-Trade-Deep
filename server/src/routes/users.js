@@ -1,7 +1,7 @@
 // server/src/routes/users.js
 import express from 'express';
 import pool from '../db.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { auth } from '../middleware/auth.js';
 import { OAuth2Client } from 'google-auth-library';
