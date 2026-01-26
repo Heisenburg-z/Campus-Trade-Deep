@@ -361,7 +361,7 @@ const ProductCard = ({ product }) => {
         {/* Divider */}
         <div className="border-t border-gray-100 my-3"></div>
         
-        {/* Seller info and rating */}
+        {/* Seller info and rating TODO*/}
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             {product.sellerAvatar ? (
