@@ -1,40 +1,58 @@
 import pg from 'pg';
 const { Pool } = pg;
 
-// Database configuration
+// Parse DATABASE_URL to fix Neon connection
+let connectionString = process.env.DATABASE_URL;
+
+// Fix for Neon.tech connection string format
+if (connectionString && connectionString.includes('neon.tech')) {
+  console.log('🔧 Detected Neon.tech PostgreSQL, adjusting connection...');
+  
+  // Ensure SSL is properly configured for Neon
+  if (!connectionString.includes('sslmode=')) {
+    connectionString += '&sslmode=require';
+  }
+  
+  // Add connection timeout for Neon
+  if (!connectionString.includes('connect_timeout=')) {
+    connectionString += '&connect_timeout=30';
+  }
+}
+
 const poolConfig = {
-  connectionString: process.env.DATABASE_URL,
+  connectionString: connectionString,
   // Connection pool settings
-  max: process.env.NODE_ENV === 'production' ? 20 : 10,
+  max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 10000, // Increased for Neon
 };
 
-// SSL for production (Railway PostgreSQL requires SSL)
+// SSL configuration for production (required for Neon)
 if (process.env.NODE_ENV === 'production') {
   poolConfig.ssl = {
+    rejectUnauthorized: false,
+    require: true
+  };
+}
+
+// For Neon specifically, use this SSL config
+if (connectionString && connectionString.includes('neon.tech')) {
+  poolConfig.ssl = {
+    require: true,
     rejectUnauthorized: false
   };
 }
 
-// Create the pool
 const pool = new Pool(poolConfig);
 
-// Event listeners for debugging
+// Event listeners
 pool.on('connect', () => {
-  console.log('🔌 New database connection established');
+  console.log('✅ New database connection established');
 });
 
 pool.on('error', (err) => {
-  console.error('💥 Unexpected database error:', err.message);
+  console.error('💥 Database error:', err.message);
   // Don't crash in production
-  if (process.env.NODE_ENV !== 'production') {
-    process.exit(-1);
-  }
-});
-
-pool.on('remove', () => {
-  console.log('🔌 Database connection removed');
 });
 
 export default pool;
