@@ -123,7 +123,7 @@ if (!sellerId || !listingId) {
     const fetchListings = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`https://campus-trade-deep-production.up.railway.app/api/listings/?page=${page}&limit=12`);
+        const response = await fetch(`https://campus-trade-deep-production-7247.up.railway.app/api/listings/?page=${page}&limit=12`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch listings');

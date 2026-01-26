@@ -86,7 +86,7 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
     setError('');
     
     try {
-      const BACKEND_URL = 'https://campus-trade-deep-production.up.railway.app';
+      const BACKEND_URL = 'https://campus-trade-deep-production-7247.up.railway.app';
       const endpoint = type === 'login' ? 
         `${BACKEND_URL}/api/users/login` : 
         `${BACKEND_URL}/api/users/register`;
@@ -125,7 +125,7 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       setLoading(true);
-      const BACKEND_URL = 'https://campus-trade-deep-production.up.railway.app';
+      const BACKEND_URL = 'https://campus-trade-deep-production-7247.up.railway.app';
       const response = await axios.post(
         `${BACKEND_URL}/api/users/auth/google`,//if fail check this, /api/users/auth/google
         { token: credentialResponse.credential },
