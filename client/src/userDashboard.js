@@ -78,7 +78,7 @@ if (!sellerId || !listingId) {
           try {
             const token = localStorage.getItem('campusTradeToken');
             const response = await axios.post(
-              `${process.env.REACT_APP_API_URL}/api/messages`,
+              `https://campus-trade-deep-production-7247.up.railway.app/api/messages`,
               {
                 listingId: listingId,
                 recipientId: sellerId,
@@ -107,7 +107,7 @@ if (!sellerId || !listingId) {
       }
       
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/me`, {
+        const response = await fetch(`https://campus-trade-deep-production-7247.up.railway.app/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const userData = await response.json();
@@ -155,7 +155,7 @@ if (!sellerId || !listingId) {
         try {
           const token = localStorage.getItem('campusTradeToken');
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/api/messages/conversations`,
+            `https://campus-trade-deep-production-7247.up.railway.app/api/messages/conversations`,
             { headers: { Authorization: `Bearer ${token}` }}
           );
           setConversations(response.data);
@@ -231,7 +231,7 @@ if (!sellerId || !listingId) {
     try {
       const token = localStorage.getItem('campusTradeToken');
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/messages`,
+        `https://campus-trade-deep-production-7247.up.railway.app/api/messages`,
         {
           conversation_id: selectedConversation.conversation_id,
           content: newMessage
