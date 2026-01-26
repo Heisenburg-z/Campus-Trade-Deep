@@ -1,0 +1,16 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 60
+restartPolicyType = "ALWAYS"
+
+# Service ports
+[[services]]
+port = 8080
+protocol = "TCP"
+
+# Environment variables
+[environments.production.variables]
+NODE_ENV = "production"
