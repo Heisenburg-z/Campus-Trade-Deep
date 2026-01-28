@@ -67,7 +67,7 @@ const secondaryTabs = [
         <div className="flex items-center space-x-3">
           <div className="w-25 h-15 rounded-lg bg-gradient-to-br from-[#1B8ED1] to-[#8EC6EA] flex items-center justify-center">
                               <img 
-        src={`/images/logo.png`}
+        src={`/images/trans.png`}
         alt="CampusTrade Logo"
         className="w-25 h-15"
       />
