@@ -199,6 +199,8 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
   );
 };
 
+
+
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   
@@ -207,64 +209,88 @@ const HeroSection = () => {
   }, []);
   
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-violet-700 text-white">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-white blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-indigo-300 blur-3xl"></div>
+    <div className="relative overflow-hidden text-white min-h-[600px] md:min-h-[700px]">
+      {/* Background Image Section */}
+      <div className="absolute inset-0 z-0">
+        {/* Main background image */}
+        <div className="absolute inset-0">
+          <img
+            src={`${process.env.PUBLIC_URL}/images/Backphoto.jpg`}
+            alt="Campus marketplace background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        
+        {/* Reduced dark overlay - less opacity */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/60 via-purple-800/50 to-violet-900/60"></div>
+        
+        {/* Additional gradient for depth - reduced opacity */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10"></div>
+        
+        {/* Keep your animated background elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-white blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-indigo-300 blur-3xl"></div>
+        </div>
       </div>
       
+      {/* Content Section */}
       <div className="max-w-7xl mx-auto px-6 py-24 md:py-32 relative z-10">
         <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-center md:text-left">
             Trade Smart,
             <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-pink-300">
               Campus Style
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto font-light">
+          <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto md:mx-0 font-light text-center md:text-left">
             Buy, sell, and trade items with fellow students securely on our campus marketplace
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
-            <button className="group flex items-center gap-2 bg-white text-indigo-700 px-8 py-4 rounded-full font-medium hover:bg-gray-50 hover:shadow-lg transform hover:-translate-y-1 transition-all w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4 mb-12">
+            <button className="group flex items-center gap-2 bg-white text-indigo-700 px-8 py-4 rounded-full font-medium hover:bg-gray-50 hover:shadow-lg transform hover:-translate-y-1 transition-all w-full sm:w-auto justify-center">
               <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
               <span>Sell Now</span>
             </button>
             
-            <button className="group flex items-center gap-2 bg-indigo-800 bg-opacity-30 border-2 border-white px-8 py-4 rounded-full font-medium hover:bg-white hover:text-indigo-700 transform hover:-translate-y-1 transition-all w-full sm:w-auto">
+            <button className="group flex items-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/30 px-8 py-4 rounded-full font-medium hover:bg-white hover:text-indigo-700 transform hover:-translate-y-1 transition-all w-full sm:w-auto justify-center">
               <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
               <span>Browse Items</span>
             </button>
           </div>
           
           {/* Stats section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-            <div className="bg-white bg-opacity-10 p-4 rounded-xl backdrop-blur-sm border border-white border-opacity-20">
-              <div className="font-bold text-3xl mb-1">1,200+</div>
-              <div className="text-indigo-100">Active listings</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto md:mx-0">
+            <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
+              <div className="font-bold text-3xl mb-1 text-center md:text-left">1,200+</div>
+              <div className="text-indigo-100 text-center md:text-left">Active listings</div>
             </div>
-            <div className="bg-white bg-opacity-10 p-4 rounded-xl backdrop-blur-sm border border-white border-opacity-20">
-              <div className="font-bold text-3xl mb-1">3,000+</div>
-              <div className="text-indigo-100">Happy students</div>
+            <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
+              <div className="font-bold text-3xl mb-1 text-center md:text-left">3,000+</div>
+              <div className="text-indigo-100 text-center md:text-left">Happy students</div>
             </div>
-            <div className="bg-white bg-opacity-10 p-4 rounded-xl backdrop-blur-sm border border-white border-opacity-20">
-              <div className="font-bold text-3xl mb-1">15+</div>
-              <div className="text-indigo-100">Universities</div>
+            <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
+              <div className="font-bold text-3xl mb-1 text-center md:text-left">15+</div>
+              <div className="text-indigo-100 text-center md:text-left">Universities</div>
             </div>
           </div>
           
           {/* Trending badge */}
-          <div className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-1 bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
+          <div className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-1 bg-white/25 backdrop-blur-sm px-3 py-1 rounded-full text-sm border border-white/40">
             <TrendingUp className="w-4 h-4" />
             <span>Trending on campus</span>
           </div>
         </div>
       </div>
+      
+      {/* Bottom gradient fade - reduced opacity */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent z-5"></div>
     </div>
   );
 };
+
+
 
 const ProductCard = ({ product }) => {
   // Helper function to render star rating
