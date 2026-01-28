@@ -80,7 +80,11 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
               onClick={toggleSearch}
               className="text-gray-600 hover:text-[#1B8ED1] transition p-2 rounded-full hover:bg-gray-100"
             >
-              <Search className="w-5 h-5" />
+                                            <img 
+        src={`/icons/search.png`}
+        alt="CampusTrade Logo"
+        className="w-15 h-4 object-contain"
+      />
             </button>
           </div>
           
