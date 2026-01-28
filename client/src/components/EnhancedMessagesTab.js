@@ -36,7 +36,7 @@ const EnhancedMessagesTab = ({ user }) => {
       try {
         const token = localStorage.getItem('campusTradeToken');
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/messages/conversations`,
+          `https://campus-trade-deep-production-7247.up.railway.app/api/messages/conversations`,
           { headers: { Authorization: `Bearer ${token}` }}
         );
         
@@ -94,7 +94,7 @@ const EnhancedMessagesTab = ({ user }) => {
       try {
         const token = localStorage.getItem('campusTradeToken');
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/messages/${selectedConversation.conversation_id}`,
+          `https://campus-trade-deep-production-7247.up.railway.app/api/messages/${selectedConversation.conversation_id}`,
           { headers: { Authorization: `Bearer ${token}` }}
         );
         
@@ -150,7 +150,7 @@ const EnhancedMessagesTab = ({ user }) => {
     try {
       const token = localStorage.getItem('campusTradeToken');
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/messages`,
+        `https://campus-trade-deep-production-7247.up.railway.app/api/messages`,
         {
           conversationId: selectedConversation.conversation_id,
           content: newMsg.content,

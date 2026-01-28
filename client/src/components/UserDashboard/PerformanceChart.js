@@ -35,24 +35,30 @@ const PerformanceChart = () => {
           <XAxis dataKey={xKey} stroke="#6b7280" />
           <YAxis stroke="#6b7280" />
           <Tooltip 
-            contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+            contentStyle={{ 
+              backgroundColor: '#fff', 
+              borderRadius: '8px', 
+              border: 'none', 
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              color: '#0B2A4A'
+            }}
           />
           <Legend />
           <Line 
             type="monotone" 
             dataKey="sales" 
-            stroke="#4f46e5" 
+            stroke="#1B8ED1" 
             strokeWidth={3}
-            dot={{ fill: '#4f46e5', r: 4 }}
+            dot={{ fill: '#1B8ED1', r: 4 }}
             activeDot={{ r: 6 }}
             name="Sales"
           />
           <Line 
             type="monotone" 
             dataKey="views" 
-            stroke="#10b981" 
+            stroke="#8EC6EA" 
             strokeWidth={2}
-            dot={{ fill: '#10b981', r: 4 }}
+            dot={{ fill: '#8EC6EA', r: 4 }}
             activeDot={{ r: 6 }}
             name="Views"
           />
@@ -65,27 +71,33 @@ const PerformanceChart = () => {
           <XAxis dataKey={xKey} stroke="#6b7280" />
           <YAxis stroke="#6b7280" />
           <Tooltip 
-            contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+            contentStyle={{ 
+              backgroundColor: '#fff', 
+              borderRadius: '8px', 
+              border: 'none', 
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              color: '#0B2A4A'
+            }}
           />
           <Legend />
-          <Bar dataKey="sales" fill="#4f46e5" name="Sales" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="inquiries" fill="#f59e0b" name="Inquiries" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="sales" fill="#1B8ED1" name="Sales" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="inquiries" fill="#ec463d" name="Inquiries" radius={[4, 4, 0, 0]} />
         </BarChart>
       );
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
+    <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-[#EAF4FB]">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-semibold">Performance Overview</h3>
+        <h3 className="text-xl font-semibold text-[#0B2A4A]">Performance Overview</h3>
         <div className="flex space-x-2">
           <button 
             onClick={() => setTimeframe('weekly')}
             className={`px-3 py-1 rounded-lg text-sm ${
               timeframe === 'weekly' 
-                ? 'bg-indigo-600 text-white' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-[#1B8ED1] text-white' 
+                : 'bg-[#EAF4FB] text-[#0B2A4A] hover:bg-[#8EC6EA]'
             }`}
           >
             Weekly
@@ -94,15 +106,15 @@ const PerformanceChart = () => {
             onClick={() => setTimeframe('monthly')}
             className={`px-3 py-1 rounded-lg text-sm ${
               timeframe === 'monthly' 
-                ? 'bg-indigo-600 text-white' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-[#1B8ED1] text-white' 
+                : 'bg-[#EAF4FB] text-[#0B2A4A] hover:bg-[#8EC6EA]'
             }`}
           >
             Monthly
           </button>
           <button 
             onClick={() => setChartView(chartView === 'line' ? 'bar' : 'line')}
-            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200"
+            className="px-3 py-1 bg-[#EAF4FB] text-[#0B2A4A] rounded-lg text-sm hover:bg-[#8EC6EA]"
           >
             {chartView === 'line' ? 'Bar' : 'Line'} View
           </button>
