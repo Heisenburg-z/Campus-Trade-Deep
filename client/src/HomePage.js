@@ -9,6 +9,17 @@ import {
   Bell, Menu, X, BookOpen, MessageSquare, User
 } from 'lucide-react';
 
+// Add custom CSS variables for your colors
+const style = `
+  :root {
+    --blue-primary: #1B8ED1;
+    --blue-dark: #0B2A4A;
+    --blue-light: #8EC6EA;
+    --red-accent: #E5524A;
+    --white-soft: #EAF4FB;
+  }
+`;
+
 const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -18,39 +29,56 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
+      <style>{style}</style>
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
             <a href="/" className="flex items-center">
-              <div className="flex items-center gap-2">
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 w-8 h-8 rounded-lg flex items-center justify-center">
-                  <ShoppingBag className="w-4 h-4 text-white" />
+              <div className="flex items-center gap-3">
+                 <div className="w-14 h-14 flex items-center justify-center">
+                  <img 
+        src={`/images/logo.png`}
+        alt="CampusTrade Logo"
+        className="w-full h-full object-contain"
+      />
                 </div>
-                <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">CampusTrade</span>
+                <span className="text-2xl font-bold text-[#0B2A4A]">CampusTrade</span>
               </div>
             </a>
           </div>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <a href="/marketplace" className="text-gray-600 hover:text-indigo-600 font-medium flex items-center gap-1">
-              <ShoppingBag className="w-4 h-4" />
+            <a href="/marketplace" className="text-gray-600 hover:text-[#1B8ED1] font-medium flex items-center gap-1">
+                                <img 
+        src={`/icons/Marketplace.png`}
+        alt="CampusTrade Logo"
+        className="w-15 h-4 object-contain"
+      />
               <span>Marketplace</span>
             </a>
-            <a href="/courses" className="text-gray-600 hover:text-indigo-600 font-medium flex items-center gap-1">
-              <BookOpen className="w-4 h-4" />
+            <a href="/courses" className="text-gray-600 hover:text-[#1B8ED1] font-medium flex items-center gap-1">
+                                            <img 
+        src={`/icons/courses.png`}
+        alt="CampusTrade Logo"
+        className="w-15 h-4 object-contain"
+      />
               <span>Courses</span>
             </a>
-            <a href="/messages" className="text-gray-600 hover:text-indigo-600 font-medium flex items-center gap-1">
-              <MessageSquare className="w-4 h-4" />
+            <a href="/messages" className="text-gray-600 hover:text-[#1B8ED1] font-medium flex items-center gap-1">
+                                            <img 
+        src={`/icons/messages.png`}
+        alt="CampusTrade Logo"
+        className="w-15 h-4 object-contain"
+      />
               <span>Messages</span>
             </a>
             
             {/* Search button */}
             <button 
               onClick={toggleSearch}
-              className="text-gray-600 hover:text-indigo-600 transition p-2 rounded-full hover:bg-gray-100"
+              className="text-gray-600 hover:text-[#1B8ED1] transition p-2 rounded-full hover:bg-gray-100"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -61,16 +89,16 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
             {user ? (
               <div className="flex items-center gap-4">
                 {/* Notifications */}
-                <button className="text-gray-600 hover:text-indigo-600 transition relative p-2 rounded-full hover:bg-gray-100">
+                <button className="text-gray-600 hover:text-[#1B8ED1] transition relative p-2 rounded-full hover:bg-gray-100">
                   <Bell className="w-5 h-5" />
-                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute top-0 right-0 bg-[#E5524A] text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                     3
                   </span>
                 </button>
                 
                 {/* User profile */}
                 <div className="flex items-center gap-2 group relative">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md">
+                  <div className="w-9 h-9 rounded-full bg-[#1B8ED1] flex items-center justify-center text-white shadow-md">
                     {user.username.charAt(0).toUpperCase()}
                   </div>
                   <span className="text-gray-700 font-medium">{user.username}</span>
@@ -78,18 +106,18 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
                   {/* Dropdown menu */}
                   <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right">
                     <div className="py-1">
-                      <a href="/profile" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                      <a href="/profile" className="block px-4 py-2 text-gray-700 hover:bg-[#EAF4FB] hover:text-[#1B8ED1]">
                         Profile
                       </a>
-                      <a href="/settings" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                      <a href="/settings" className="block px-4 py-2 text-gray-700 hover:bg-[#EAF4FB] hover:text-[#1B8ED1]">
                         Settings
                       </a>
-                      <a href="/listings" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                      <a href="/listings" className="block px-4 py-2 text-gray-700 hover:bg-[#EAF4FB] hover:text-[#1B8ED1]">
                         My Listings
                       </a>
                       <button 
                         onClick={onLogout}
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-[#EAF4FB] hover:text-[#1B8ED1]"
                       >
                         Logout
                       </button>
@@ -101,13 +129,13 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
               <div className="flex items-center gap-3">
                 <button 
                   onClick={onLoginClick}
-                  className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition shadow-md hover:shadow-lg"
+                  className="bg-[#1B8ED1] text-white px-5 py-2 rounded-lg hover:bg-[#0B2A4A] transition shadow-md hover:shadow-lg"
                 >
                   Login
                 </button>
                 <button
                   onClick={onSignupClick}
-                  className="border-2 border-indigo-600 text-indigo-600 px-5 py-2 rounded-lg hover:bg-indigo-50 transition"
+                  className="border-2 border-[#1B8ED1] text-[#1B8ED1] px-5 py-2 rounded-lg hover:bg-[#EAF4FB] transition"
                 >
                   Sign Up
                 </button>
@@ -119,7 +147,7 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
           <div className="md:hidden flex items-center">
             <button 
               onClick={toggleMenu}
-              className="text-gray-600 hover:text-indigo-600 transition p-2"
+              className="text-gray-600 hover:text-[#1B8ED1] transition p-2"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -130,27 +158,27 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100">
             <div className="flex flex-col gap-3">
-              <a href="/marketplace" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+              <a href="/marketplace" className="px-4 py-2 text-gray-600 hover:bg-[#EAF4FB] hover:text-[#1B8ED1] rounded-lg">
                 Marketplace
               </a>
-              <a href="/courses" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+              <a href="/courses" className="px-4 py-2 text-gray-600 hover:bg-[#EAF4FB] hover:text-[#1B8ED1] rounded-lg">
                 Courses
               </a>
-              <a href="/messages" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+              <a href="/messages" className="px-4 py-2 text-gray-600 hover:bg-[#EAF4FB] hover:text-[#1B8ED1] rounded-lg">
                 Messages
               </a>
               
               {user ? (
                 <>
-                  <a href="/profile" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+                  <a href="/profile" className="px-4 py-2 text-gray-600 hover:bg-[#EAF4FB] hover:text-[#1B8ED1] rounded-lg">
                     Profile
                   </a>
-                  <a href="/listings" className="px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">
+                  <a href="/listings" className="px-4 py-2 text-gray-600 hover:bg-[#EAF4FB] hover:text-[#1B8ED1] rounded-lg">
                     My Listings
                   </a>
                   <button 
                     onClick={onLogout}
-                    className="px-4 py-2 text-left text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg"
+                    className="px-4 py-2 text-left text-gray-600 hover:bg-[#EAF4FB] hover:text-[#1B8ED1] rounded-lg"
                   >
                     Logout
                   </button>
@@ -159,13 +187,13 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
                 <div className="flex flex-col gap-2 px-4 pt-2">
                   <button 
                     onClick={onLoginClick}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+                    className="bg-[#1B8ED1] text-white px-4 py-2 rounded-lg hover:bg-[#0B2A4A] transition"
                   >
                     Login
                   </button>
                   <button
                     onClick={onSignupClick}
-                    className="border-2 border-indigo-600 text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition"
+                    className="border-2 border-[#1B8ED1] text-[#1B8ED1] px-4 py-2 rounded-lg hover:bg-[#EAF4FB] transition"
                   >
                     Sign Up
                   </button>
@@ -182,12 +210,12 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
               <input 
                 type="text" 
                 placeholder="Search for textbooks, electronics, furniture..." 
-                className="w-full py-2 px-4 pl-10 border-2 border-indigo-200 rounded-lg focus:outline-none focus:border-indigo-600"
+                className="w-full py-2 px-4 pl-10 border-2 border-[#8EC6EA] rounded-lg focus:outline-none focus:border-[#1B8ED1]"
               />
               <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
               <button 
                 onClick={toggleSearch}
-                className="absolute right-3 top-2.5 text-gray-400 hover:text-indigo-600"
+                className="absolute right-3 top-2.5 text-gray-400 hover:text-[#1B8ED1]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -210,27 +238,28 @@ const HeroSection = () => {
   
   return (
     <div className="relative overflow-hidden text-white min-h-[600px] md:min-h-[700px]">
+      <style>{style}</style>
       {/* Background Image Section */}
       <div className="absolute inset-0 z-0">
         {/* Main background image */}
         <div className="absolute inset-0">
           <img
-            src={`${process.env.PUBLIC_URL}/images/Backphoto.jpg`}
+            src={`/images/Backphoto.jpg`}
             alt="Campus marketplace background"
             className="w-full h-full object-cover"
           />
         </div>
         
-        {/* Reduced dark overlay - less opacity */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/60 via-purple-800/50 to-violet-900/60"></div>
+        {/* Dark overlay with your blue colors */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B2A4A]/70 via-[#1B8ED1]/50 to-[#0B2A4A]/70"></div>
         
-        {/* Additional gradient for depth - reduced opacity */}
+        {/* Additional gradient for depth */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10"></div>
         
         {/* Keep your animated background elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-white blur-3xl"></div>
-          <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-indigo-300 blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-[#8EC6EA] blur-3xl"></div>
         </div>
       </div>
       
@@ -239,7 +268,7 @@ const HeroSection = () => {
         <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
           <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-center md:text-left">
             Trade Smart,
-            <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-pink-300">
+            <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-[#8EC6EA] to-[#E5524A]">
               Campus Style
             </span>
           </h1>
@@ -249,12 +278,12 @@ const HeroSection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4 mb-12">
-            <button className="group flex items-center gap-2 bg-white text-indigo-700 px-8 py-4 rounded-full font-medium hover:bg-gray-50 hover:shadow-lg transform hover:-translate-y-1 transition-all w-full sm:w-auto justify-center">
+            <button className="group flex items-center gap-2 bg-white text-[#0B2A4A] px-8 py-4 rounded-full font-medium hover:bg-[#EAF4FB] hover:shadow-lg transform hover:-translate-y-1 transition-all w-full sm:w-auto justify-center">
               <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
               <span>Sell Now</span>
             </button>
             
-            <button className="group flex items-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/30 px-8 py-4 rounded-full font-medium hover:bg-white hover:text-indigo-700 transform hover:-translate-y-1 transition-all w-full sm:w-auto justify-center">
+            <button className="group flex items-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/30 px-8 py-4 rounded-full font-medium hover:bg-white hover:text-[#0B2A4A] transform hover:-translate-y-1 transition-all w-full sm:w-auto justify-center">
               <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
               <span>Browse Items</span>
             </button>
@@ -264,15 +293,15 @@ const HeroSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto md:mx-0">
             <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
               <div className="font-bold text-3xl mb-1 text-center md:text-left">1,200+</div>
-              <div className="text-indigo-100 text-center md:text-left">Active listings</div>
+              <div className="text-[#EAF4FB] text-center md:text-left">Active listings</div>
             </div>
             <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
               <div className="font-bold text-3xl mb-1 text-center md:text-left">3,000+</div>
-              <div className="text-indigo-100 text-center md:text-left">Happy students</div>
+              <div className="text-[#EAF4FB] text-center md:text-left">Happy students</div>
             </div>
             <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
               <div className="font-bold text-3xl mb-1 text-center md:text-left">15+</div>
-              <div className="text-indigo-100 text-center md:text-left">Universities</div>
+              <div className="text-[#EAF4FB] text-center md:text-left">Universities</div>
             </div>
           </div>
           
@@ -284,7 +313,7 @@ const HeroSection = () => {
         </div>
       </div>
       
-      {/* Bottom gradient fade - reduced opacity */}
+      {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent z-5"></div>
     </div>
   );
@@ -327,9 +356,10 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group">
+      <style>{style}</style>
       {/* Badge for special statuses - conditionally rendered */}
       {product.isNew && (
-        <div className="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+        <div className="absolute top-3 left-3 bg-[#E5524A] text-white text-xs font-bold px-2 py-1 rounded-full z-10">
           NEW
         </div>
       )}
@@ -343,7 +373,7 @@ const ProductCard = ({ product }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
           <div className="p-4 w-full">
-            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors duration-300">
+            <button className="w-full bg-[#1B8ED1] hover:bg-[#0B2A4A] text-white font-medium py-2 rounded-lg transition-colors duration-300">
               View Details
             </button>
           </div>
@@ -365,7 +395,7 @@ const ProductCard = ({ product }) => {
         </div>
         
         {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate group-hover:text-indigo-600 transition-colors">
+        <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate group-hover:text-[#1B8ED1] transition-colors">
           {product.title}
         </h3>
         
@@ -376,9 +406,9 @@ const ProductCard = ({ product }) => {
         
         {/* Price and condition */}
         <div className="flex justify-between items-center mb-3">
-          <span className="text-xl font-bold text-indigo-600">R{product.price}</span>
+          <span className="text-xl font-bold text-[#1B8ED1]">R{product.price}</span>
           {product.condition && (
-            <span className="bg-indigo-50 text-indigo-700 text-xs px-2 py-1 rounded-full">
+            <span className="bg-[#EAF4FB] text-[#0B2A4A] text-xs px-2 py-1 rounded-full">
               {product.condition}
             </span>
           )}
@@ -397,7 +427,7 @@ const ProductCard = ({ product }) => {
                 className="w-6 h-6 rounded-full mr-2"
               />
             ) : (
-              <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-2">
+              <div className="w-6 h-6 rounded-full bg-[#EAF4FB] text-[#1B8ED1] flex items-center justify-center mr-2">
                 {product.seller.charAt(0).toUpperCase()}
               </div>
             )}
@@ -416,7 +446,7 @@ const ProductCard = ({ product }) => {
               <span>{product.location}</span>
             </div>
           )}
-          <button className="flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
+          <button className="flex items-center text-[#1B8ED1] hover:text-[#0B2A4A] font-medium">
             <MessageCircle size={14} className="mr-1" />
             <span>Message</span>
           </button>
@@ -480,13 +510,14 @@ const ProductGrid = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
+      <style>{style}</style>
       <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
         <input 
           type="text" 
           placeholder="Search items..." 
-          className="w-full md:w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full md:w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B8ED1]"
         />
-        <select className="w-full md:w-48 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <select className="w-full md:w-48 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B8ED1]">
           <option>All Categories</option>
           <option>Books</option>
           <option>Electronics</option>
@@ -504,24 +535,25 @@ const ProductGrid = () => {
 };
 
 const Footer = () => (
-  <footer className="bg-gray-800 text-white py-12">
+  <footer className="bg-[#0B2A4A] text-white py-12">
+    <style>{style}</style>
     <div className="max-w-7xl mx-auto px-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <h3 className="text-xl font-bold mb-4">CampusTrade</h3>
-          <p className="text-gray-400">Connecting students through sustainable commerce.</p>
+          <p className="text-[#8EC6EA]">Connecting students through sustainable commerce.</p>
           <div className="mt-4 flex space-x-2">
-            <a href="mailto:thapelondlovu74@gmail.com" className="text-gray-400 hover:text-white transition" title="Email">
+            <a href="mailto:thapelondlovu74@gmail.com" className="text-[#8EC6EA] hover:text-white transition" title="Email">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
               </svg>
             </a>
-            <a href="https://www.linkedin.com/in/thapelo-ndlovu-1165152aa" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition" title="LinkedIn">
+            <a href="https://www.linkedin.com/in/thapelo-ndlovu-1165152aa" target="_blank" rel="noopener noreferrer" className="text-[#8EC6EA] hover:text-white transition" title="LinkedIn">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
               </svg>
             </a>
-            <a href="https://twitter.com/thapelondlovu8008" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition" title="Twitter">
+            <a href="https://twitter.com/thapelondlovu8008" target="_blank" rel="noopener noreferrer" className="text-[#8EC6EA] hover:text-white transition" title="Twitter">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
               </svg>
@@ -531,21 +563,21 @@ const Footer = () => (
         <div>
           <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
           <ul className="space-y-2">
-            <li><a href="#projects" className="text-gray-400 hover:text-white transition">Projects</a></li>
-            <li><a href="#tech-stack" className="text-gray-400 hover:text-white transition">Tech Stack</a></li>
-            <li><a href="#learning-journey" className="text-gray-400 hover:text-white transition">Learning Path</a></li>
+            <li><a href="#projects" className="text-[#8EC6EA] hover:text-white transition">Projects</a></li>
+            <li><a href="#tech-stack" className="text-[#8EC6EA] hover:text-white transition">Tech Stack</a></li>
+            <li><a href="#learning-journey" className="text-[#8EC6EA] hover:text-white transition">Learning Path</a></li>
           </ul>
         </div>
         <div>
           <h4 className="text-lg font-semibold mb-4">My Platforms</h4>
           <ul className="space-y-2">
-            <li><a href="https://portfolio-43d9b.web.app/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">Portfolio</a></li>
-            <li><a href="https://www.sololearn.com/en/profile/24239495" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">SoloLearn</a></li>
-            <li><a href="https://www.chess.com/member/thapelo_ndlovu" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">Chess.com</a></li>
+            <li><a href="https://portfolio-43d9b.web.app/" target="_blank" rel="noopener noreferrer" className="text-[#8EC6EA] hover:text-white transition">Portfolio</a></li>
+            <li><a href="https://www.sololearn.com/en/profile/24239495" target="_blank" rel="noopener noreferrer" className="text-[#8EC6EA] hover:text-white transition">SoloLearn</a></li>
+            <li><a href="https://www.chess.com/member/thapelo_ndlovu" target="_blank" rel="noopener noreferrer" className="text-[#8EC6EA] hover:text-white transition">Chess.com</a></li>
           </ul>
         </div>
       </div>
-      <div className="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-500">
+      <div className="mt-8 pt-8 border-t border-[#1B8ED1] text-center text-sm text-[#8EC6EA]">
         © {new Date().getFullYear()} CampusTrade. Powered by ☕ & Late Night Coding 🌙
       </div>
     </div>
@@ -578,6 +610,7 @@ const HomePage = ({listings}) => {
   };
   return (
     <div className="min-h-screen flex flex-col">
+      <style>{style}</style>
       <Navbar 
         user={user}
         onLoginClick={() => {
