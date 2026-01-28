@@ -15,7 +15,7 @@ const style = `
     --blue-primary: #1B8ED1;
     --blue-dark: #0B2A4A;
     --blue-light: #8EC6EA;
-    --red-accent: #E5524A;
+    --red-accent: #ec463dff;
     --white-soft: #EAF4FB;
   }
 `;
@@ -283,31 +283,25 @@ const HeroSection = () => {
           
           <div className="flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4 mb-12">
             <button className="group flex items-center gap-2 bg-white text-[#0B2A4A] px-8 py-4 rounded-full font-medium hover:bg-[#EAF4FB] hover:shadow-lg transform hover:-translate-y-1 transition-all w-full sm:w-auto justify-center">
-              <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                            <img 
+        src={`/icons/sell.png`}
+        alt="CampusTrade Logo"
+        className="w-15 h-8 object-contain"
+      />
               <span>Sell Now</span>
             </button>
             
             <button className="group flex items-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/30 px-8 py-4 rounded-full font-medium hover:bg-white hover:text-[#0B2A4A] transform hover:-translate-y-1 transition-all w-full sm:w-auto justify-center">
-              <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                            <img 
+        src={`/icons/browse.png`}
+        alt="CampusTrade Logo"
+        className="w-15 h-8 object-contain"
+      />
               <span>Browse Items</span>
             </button>
           </div>
           
-          {/* Stats section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto md:mx-0">
-            <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
-              <div className="font-bold text-3xl mb-1 text-center md:text-left">1,200+</div>
-              <div className="text-[#EAF4FB] text-center md:text-left">Active listings</div>
-            </div>
-            <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
-              <div className="font-bold text-3xl mb-1 text-center md:text-left">3,000+</div>
-              <div className="text-[#EAF4FB] text-center md:text-left">Happy students</div>
-            </div>
-            <div className="bg-white/15 backdrop-blur-sm p-4 rounded-xl border border-white/25 hover:bg-white/20 transition-all">
-              <div className="font-bold text-3xl mb-1 text-center md:text-left">15+</div>
-              <div className="text-[#EAF4FB] text-center md:text-left">Universities</div>
-            </div>
-          </div>
+
           
           {/* Trending badge */}
           <div className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-1 bg-white/25 backdrop-blur-sm px-3 py-1 rounded-full text-sm border border-white/40">
