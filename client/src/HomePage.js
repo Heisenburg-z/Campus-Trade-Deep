@@ -40,7 +40,7 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
                   <img 
         src={`/images/logo.png`}
         alt="CampusTrade Logo"
-        className="w-full h-full object-contain"
+        className="w-16 h-14 object-contain"
       />
                 </div>
                 <span className="text-2xl font-bold text-[#0B2A4A]">CampusTrade</span>
@@ -54,7 +54,7 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
                                 <img 
         src={`/icons/Marketplace.png`}
         alt="CampusTrade Logo"
-        className="w-15 h-4 object-contain"
+        className="w-15 h-8 object-contain"
       />
               <span>Marketplace</span>
             </a>
@@ -62,7 +62,7 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
                                             <img 
         src={`/icons/courses.png`}
         alt="CampusTrade Logo"
-        className="w-15 h-4 object-contain"
+        className="w-15 h-8 object-contain"
       />
               <span>Courses</span>
             </a>
@@ -70,7 +70,7 @@ const Navbar = ({ user, onLoginClick, onSignupClick, onLogout }) => {
                                             <img 
         src={`/icons/messages.png`}
         alt="CampusTrade Logo"
-        className="w-15 h-4 object-contain"
+        className="w-15 h-8 object-contain"
       />
               <span>Messages</span>
             </a>

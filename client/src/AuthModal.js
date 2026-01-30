@@ -127,7 +127,7 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
       setLoading(true);
       const BACKEND_URL = 'https://campus-trade-deep-production-7247.up.railway.app';
       const response = await axios.post(
-        `${BACKEND_URL}/api/users/auth/google`,//if fail check this, /api/users/auth/google
+        `${BACKEND_URL}/api/users/auth/google`,
         { token: credentialResponse.credential },
         { withCredentials: true }
       );
@@ -206,17 +206,17 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
   };
 
   return (
-<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="bg-white rounded-xl p-8 w-full max-w-md relative shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--blue-dark)]/90 backdrop-blur-sm">
+      <div className="bg-[var(--white-soft)] rounded-xl p-8 w-full max-w-md relative shadow-2xl border border-[var(--blue-light)]">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+          className="absolute top-4 right-4 text-[var(--blue-dark)] hover:text-[var(--red-accent)] transition-colors"
           aria-label="Close"
         >
           <FaTimes size={24} />
         </button>
         
-        <h2 className="text-3xl font-bold mb-6 text-indigo-600 text-center">
+        <h2 className="text-3xl font-bold mb-6 text-[var(--blue-primary)] text-center">
           {type === 'login' ? 'Welcome Back!' : 'Join CampusTrade'}
         </h2>
         
@@ -238,13 +238,13 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
         </div>
 
         <div className="flex items-center mb-6">
-          <div className="flex-1 h-px bg-gray-300"></div>
-          <span className="px-4 text-gray-500 text-sm">or continue with email</span>
-          <div className="flex-1 h-px bg-gray-300"></div>
+          <div className="flex-1 h-px bg-[var(--blue-light)]"></div>
+          <span className="px-4 text-[var(--blue-dark)] text-sm">or continue with email</span>
+          <div className="flex-1 h-px bg-[var(--blue-light)]"></div>
         </div>
 
         {error && (
-          <div className="mb-4 text-red-600 bg-red-50 p-3 rounded-lg text-sm border-l-4 border-red-600">
+          <div className="mb-4 text-[var(--red-accent)] bg-red-50 p-3 rounded-lg text-sm border-l-4 border-[var(--red-accent)]">
             {error}
           </div>
         )}
@@ -252,12 +252,12 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {type === 'signup' && (
             <div className="group">
-              <label className="block text-gray-700 mb-2 font-medium">Username</label>
+              <label className="block text-[var(--blue-dark)] mb-2 font-medium">Username</label>
               <input
                 type="text"
                 required
                 placeholder="Choose a unique username"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2 border border-[var(--blue-light)] rounded-lg focus:ring-2 focus:ring-[var(--blue-primary)] focus:border-transparent transition-all bg-white text-[var(--blue-dark)] placeholder:text-gray-500"
                 value={formData.username}
                 onChange={(e) => setFormData({...formData, username: e.target.value})}
               />
@@ -266,31 +266,31 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
           )}
           
           <div>
-            <label className="block text-gray-700 mb-2 font-medium">Email</label>
+            <label className="block text-[var(--blue-dark)] mb-2 font-medium">Email</label>
             <input
               type="email"
               required
               placeholder="Your university email"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-2 border border-[var(--blue-light)] rounded-lg focus:ring-2 focus:ring-[var(--blue-primary)] focus:border-transparent transition-all bg-white text-[var(--blue-dark)] placeholder:text-gray-500"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
             />
           </div>
           
           <div className="relative">
-            <label className="block text-gray-700 mb-2 font-medium">Password</label>
+            <label className="block text-[var(--blue-dark)] mb-2 font-medium">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder={type === 'login' ? "Enter your password" : "Create a strong password"}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10 transition-all"
+                className="w-full px-4 py-2 border border-[var(--blue-light)] rounded-lg focus:ring-2 focus:ring-[var(--blue-primary)] focus:border-transparent pr-10 transition-all bg-white text-[var(--blue-dark)] placeholder:text-gray-500"
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
               />
               <button 
                 type="button"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-indigo-600 focus:outline-none"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[var(--blue-primary)] focus:outline-none"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -304,28 +304,28 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
           {type === 'signup' && (
             <>
               <div className="relative">
-                <label className="block text-gray-700 mb-2 font-medium">Confirm Password</label>
+                <label className="block text-[var(--blue-dark)] mb-2 font-medium">Confirm Password</label>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   placeholder="Confirm your password"
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-2 border border-[var(--blue-light)] rounded-lg focus:ring-2 focus:ring-[var(--blue-primary)] focus:border-transparent transition-all bg-white text-[var(--blue-dark)] placeholder:text-gray-500"
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                 />
               </div>
               
               <div>
-                <label className="block text-gray-700 mb-2 font-medium">University</label>
+                <label className="block text-[var(--blue-dark)] mb-2 font-medium">University</label>
                 <select
                   required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-2 border border-[var(--blue-light)] rounded-lg focus:ring-2 focus:ring-[var(--blue-primary)] focus:border-transparent transition-all bg-white text-[var(--blue-dark)]"
                   value={formData.university}
                   onChange={(e) => setFormData({...formData, university: e.target.value})}
                 >
-                  <option value="">Select your university</option>
+                  <option value="" className="text-gray-500">Select your university</option>
                   {universities.map((uni, index) => (
-                    <option key={index} value={uni}>{uni}</option>
+                    <option key={index} value={uni} className="text-[var(--blue-dark)]">{uni}</option>
                   ))}
                 </select>
               </div>
@@ -336,7 +336,7 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="text-sm text-indigo-600 hover:text-indigo-800 hover:underline focus:outline-none"
+                className="text-sm text-[var(--blue-primary)] hover:text-[var(--red-accent)] hover:underline focus:outline-none"
               >
                 Forgot password?
               </button>
@@ -346,7 +346,7 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 mt-2 font-medium"
+            className="w-full bg-[var(--blue-primary)] text-white py-3 rounded-lg hover:bg-[var(--blue-dark)] transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 mt-2 font-medium disabled:opacity-70"
           >
             {loading ? (
               <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -358,11 +358,11 @@ const AuthModal = ({ type, onClose, switchType, onSuccess }) => {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-600">
+        <p className="mt-6 text-center text-[var(--blue-dark)]">
           {type === 'login' ? "Don't have an account? " : "Already have an account? "}
           <button
             onClick={switchType}
-            className="text-indigo-600 hover:text-indigo-800 hover:underline focus:outline-none font-medium"
+            className="text-[var(--blue-primary)] hover:text-[var(--red-accent)] hover:underline focus:outline-none font-medium"
           >
             {type === 'login' ? 'Sign up here' : 'Login here'}
           </button>
